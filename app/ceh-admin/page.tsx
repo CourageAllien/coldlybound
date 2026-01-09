@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Plus, Trash2, Save, ArrowLeft, FileText, Sparkles } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Plus, Trash2, Save, ArrowLeft, FileText, Upload, Copy } from 'lucide-react';
 import Link from 'next/link';
 
 interface Template {
@@ -9,7 +9,7 @@ interface Template {
   name: string;
   subject?: string;
   body: string;
-  createdAt: string;
+  created_at: string;
 }
 
 export default function CEHAdminPage() {
@@ -17,9 +17,14 @@ export default function CEHAdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editData, setEditData] = useState<{ name: string; subject: string; body: string }>({ name: '', subject: '', body: '' });
   const [newTemplate, setNewTemplate] = useState({ name: '', subject: '', body: '' });
   const [showAddForm, setShowAddForm] = useState(false);
+  const [uploadMode, setUploadMode] = useState<'single' | 'bulk'>('single');
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [bulkFile, setBulkFile] = useState<File | null>(null);
+  const [parsedEmails, setParsedEmails] = useState<{ name: string; subject: string; body: string }[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchTemplates();
@@ -32,72 +37,205 @@ export default function CEHAdminPage() {
       setTemplates(data.templates || []);
     } catch (error) {
       console.error('Failed to fetch templates:', error);
+      showMessage('error', 'Failed to load templates. Check Supabase connection.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const saveTemplates = async (updatedTemplates: Template[]) => {
+  const showMessage = (type: 'success' | 'error', text: string) => {
+    setMessage({ type, text });
+    setTimeout(() => setMessage(null), 4000);
+  };
+
+  const addTemplate = async () => {
+    if (!newTemplate.name.trim() || !newTemplate.body.trim()) {
+      showMessage('error', 'Name and body are required');
+      return;
+    }
+
     setIsSaving(true);
     try {
       const res = await fetch('/api/ceh-templates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ templates: updatedTemplates }),
+        body: JSON.stringify({ 
+          action: 'add',
+          template: {
+            name: newTemplate.name.trim(),
+            subject: newTemplate.subject.trim() || undefined,
+            body: newTemplate.body.trim(),
+          }
+        }),
       });
       
       if (res.ok) {
-        setTemplates(updatedTemplates);
-        setMessage({ type: 'success', text: 'Templates saved successfully!' });
-        setTimeout(() => setMessage(null), 3000);
+        await fetchTemplates();
+        setNewTemplate({ name: '', subject: '', body: '' });
+        setShowAddForm(false);
+        showMessage('success', 'Template added successfully!');
       } else {
-        throw new Error('Failed to save');
+        throw new Error('Failed to add');
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to save templates' });
-      setTimeout(() => setMessage(null), 3000);
+      showMessage('error', 'Failed to add template');
     } finally {
       setIsSaving(false);
     }
   };
 
-  const addTemplate = () => {
-    if (!newTemplate.name.trim() || !newTemplate.body.trim()) {
-      setMessage({ type: 'error', text: 'Name and body are required' });
-      setTimeout(() => setMessage(null), 3000);
+  const addBulkTemplates = async () => {
+    if (parsedEmails.length === 0) {
+      showMessage('error', 'No emails parsed from file');
       return;
     }
 
-    const template: Template = {
-      id: Date.now().toString(),
-      name: newTemplate.name.trim(),
-      subject: newTemplate.subject.trim() || undefined,
-      body: newTemplate.body.trim(),
-      createdAt: new Date().toISOString(),
-    };
-
-    const updated = [...templates, template];
-    saveTemplates(updated);
-    setNewTemplate({ name: '', subject: '', body: '' });
-    setShowAddForm(false);
-  };
-
-  const deleteTemplate = (id: string) => {
-    if (confirm('Are you sure you want to delete this template?')) {
-      const updated = templates.filter(t => t.id !== id);
-      saveTemplates(updated);
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/ceh-templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          action: 'bulk-add',
+          templates: parsedEmails.map(e => ({
+            name: e.name,
+            subject: e.subject || undefined,
+            body: e.body,
+          }))
+        }),
+      });
+      
+      if (res.ok) {
+        await fetchTemplates();
+        setParsedEmails([]);
+        setBulkFile(null);
+        setShowAddForm(false);
+        showMessage('success', `${parsedEmails.length} templates added successfully!`);
+      } else {
+        throw new Error('Failed to add');
+      }
+    } catch (error) {
+      showMessage('error', 'Failed to add templates');
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const updateTemplate = (id: string, field: string, value: string) => {
-    setTemplates(prev => prev.map(t => 
-      t.id === id ? { ...t, [field]: value } : t
-    ));
+  const deleteTemplate = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this template?')) return;
+
+    try {
+      const res = await fetch('/api/ceh-templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', template: { id } }),
+      });
+      
+      if (res.ok) {
+        await fetchTemplates();
+        showMessage('success', 'Template deleted');
+      }
+    } catch (error) {
+      showMessage('error', 'Failed to delete template');
+    }
   };
 
-  const saveTemplate = (id: string) => {
-    saveTemplates(templates);
-    setEditingId(null);
+  const startEditing = (template: Template) => {
+    setEditingId(template.id);
+    setEditData({
+      name: template.name,
+      subject: template.subject || '',
+      body: template.body,
+    });
+  };
+
+  const saveEdit = async (id: string) => {
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/ceh-templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          action: 'update',
+          template: {
+            id,
+            name: editData.name,
+            subject: editData.subject || undefined,
+            body: editData.body,
+          }
+        }),
+      });
+      
+      if (res.ok) {
+        await fetchTemplates();
+        setEditingId(null);
+        showMessage('success', 'Template updated');
+      }
+    } catch (error) {
+      showMessage('error', 'Failed to update template');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setBulkFile(file);
+    
+    try {
+      const text = await file.text();
+      const emails = parseEmailsFromText(text);
+      setParsedEmails(emails);
+      
+      if (emails.length === 0) {
+        showMessage('error', 'No emails found in file. Make sure emails are separated by "---" or blank lines.');
+      } else {
+        showMessage('success', `Found ${emails.length} emails in file`);
+      }
+    } catch (error) {
+      showMessage('error', 'Failed to read file');
+    }
+  };
+
+  const parseEmailsFromText = (text: string): { name: string; subject: string; body: string }[] => {
+    const emails: { name: string; subject: string; body: string }[] = [];
+    
+    // Split by common delimiters
+    const sections = text.split(/(?:^|\n)(?:---+|===+|Email\s*\d+:?|Template\s*\d+:?)(?:\n|$)/i)
+      .filter(s => s.trim().length > 20);
+    
+    if (sections.length === 0) {
+      // Try splitting by double newlines
+      const altSections = text.split(/\n\s*\n\s*\n/).filter(s => s.trim().length > 20);
+      sections.push(...altSections);
+    }
+    
+    sections.forEach((section, index) => {
+      const trimmed = section.trim();
+      if (!trimmed) return;
+      
+      // Try to extract subject line
+      const subjectMatch = trimmed.match(/(?:subject|subj|re):\s*(.+?)(?:\n|$)/i);
+      const subject = subjectMatch ? subjectMatch[1].trim() : '';
+      
+      // Body is everything else
+      let body = trimmed;
+      if (subjectMatch) {
+        body = trimmed.replace(subjectMatch[0], '').trim();
+      }
+      
+      if (body.length > 10) {
+        emails.push({
+          name: `Template ${index + 1}`,
+          subject,
+          body,
+        });
+      }
+    });
+    
+    return emails;
   };
 
   return (
@@ -177,8 +315,7 @@ export default function CEHAdminPage() {
           <h3 style={{ fontSize: 14, fontWeight: 600, color: '#f59e0b', marginBottom: 8 }}>How Templates Work</h3>
           <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
             Add template emails that the AI will use as <strong>structural inspiration</strong> when generating CEH emails. 
-            The AI will analyze your templates' structure, tone, and flow — but will never copy the content directly. 
-            Subject lines are optional; the AI will always generate unique subject lines.
+            The AI analyzes structure, tone, and flow — but never copies content directly.
           </p>
         </div>
 
@@ -218,76 +355,235 @@ export default function CEHAdminPage() {
             marginBottom: 24
           }}>
             <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 20, color: 'var(--text-primary)' }}>
-              New Template
+              Add Templates
             </h3>
-            
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 8 }}>
-                Template Name <span style={{ color: 'var(--error)' }}>*</span>
-              </label>
-              <input
-                type="text"
-                value={newTemplate.name}
-                onChange={(e) => setNewTemplate(p => ({ ...p, name: e.target.value }))}
-                placeholder="e.g., Pain Point Opener"
-              />
-            </div>
 
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 8 }}>
-                Subject Line <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span>
-              </label>
-              <input
-                type="text"
-                value={newTemplate.subject}
-                onChange={(e) => setNewTemplate(p => ({ ...p, subject: e.target.value }))}
-                placeholder="e.g., quick question"
-              />
-            </div>
-
-            <div style={{ marginBottom: 20 }}>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 8 }}>
-                Email Body <span style={{ color: 'var(--error)' }}>*</span>
-              </label>
-              <textarea
-                value={newTemplate.body}
-                onChange={(e) => setNewTemplate(p => ({ ...p, body: e.target.value }))}
-                placeholder="Paste your template email here..."
-                rows={8}
-                style={{ resize: 'vertical' }}
-              />
-            </div>
-
-            <div style={{ display: 'flex', gap: 12 }}>
+            {/* Mode Toggle */}
+            <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
               <button
-                onClick={addTemplate}
-                disabled={isSaving}
+                type="button"
+                onClick={() => { setUploadMode('single'); setParsedEmails([]); setBulkFile(null); }}
                 style={{
                   flex: 1,
+                  padding: '12px 16px',
+                  borderRadius: 10,
+                  border: uploadMode === 'single' ? '2px solid #f59e0b' : '1px solid var(--border-subtle)',
+                  background: uploadMode === 'single' ? 'rgba(245, 158, 11, 0.1)' : 'var(--bg-base)',
+                  color: uploadMode === 'single' ? '#f59e0b' : 'var(--text-secondary)',
+                  fontWeight: 500,
+                  fontSize: 14,
+                  cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: 8,
-                  padding: '14px 20px',
-                  background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
-                  color: 'white',
-                  fontWeight: 600,
-                  fontSize: 14,
-                  border: 'none',
-                  borderRadius: 10,
-                  cursor: 'pointer',
                 }}
               >
-                <Save size={16} />
-                Save Template
+                <Copy size={16} />
+                Single (Copy/Paste)
               </button>
               <button
-                onClick={() => { setShowAddForm(false); setNewTemplate({ name: '', subject: '', body: '' }); }}
-                className="btn-secondary"
+                type="button"
+                onClick={() => { setUploadMode('bulk'); setNewTemplate({ name: '', subject: '', body: '' }); }}
+                style={{
+                  flex: 1,
+                  padding: '12px 16px',
+                  borderRadius: 10,
+                  border: uploadMode === 'bulk' ? '2px solid #f59e0b' : '1px solid var(--border-subtle)',
+                  background: uploadMode === 'bulk' ? 'rgba(245, 158, 11, 0.1)' : 'var(--bg-base)',
+                  color: uploadMode === 'bulk' ? '#f59e0b' : 'var(--text-secondary)',
+                  fontWeight: 500,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                }}
               >
-                Cancel
+                <Upload size={16} />
+                Bulk (Upload File)
               </button>
             </div>
+
+            {uploadMode === 'single' ? (
+              <>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 8 }}>
+                    Template Name <span style={{ color: 'var(--error)' }}>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={newTemplate.name}
+                    onChange={(e) => setNewTemplate(p => ({ ...p, name: e.target.value }))}
+                    placeholder="e.g., Pain Point Opener"
+                  />
+                </div>
+
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 8 }}>
+                    Subject Line <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={newTemplate.subject}
+                    onChange={(e) => setNewTemplate(p => ({ ...p, subject: e.target.value }))}
+                    placeholder="e.g., quick question"
+                  />
+                </div>
+
+                <div style={{ marginBottom: 20 }}>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 8 }}>
+                    Email Body <span style={{ color: 'var(--error)' }}>*</span>
+                  </label>
+                  <textarea
+                    value={newTemplate.body}
+                    onChange={(e) => setNewTemplate(p => ({ ...p, body: e.target.value }))}
+                    placeholder="Paste your template email here..."
+                    rows={8}
+                    style={{ resize: 'vertical' }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <button
+                    onClick={addTemplate}
+                    disabled={isSaving}
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 8,
+                      padding: '14px 20px',
+                      background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+                      color: 'white',
+                      fontWeight: 600,
+                      fontSize: 14,
+                      border: 'none',
+                      borderRadius: 10,
+                      cursor: 'pointer',
+                      opacity: isSaving ? 0.7 : 1,
+                    }}
+                  >
+                    <Save size={16} />
+                    {isSaving ? 'Saving...' : 'Save Template'}
+                  </button>
+                  <button
+                    onClick={() => { setShowAddForm(false); setNewTemplate({ name: '', subject: '', body: '' }); }}
+                    className="btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ marginBottom: 20 }}>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".txt,.doc,.docx,.pdf,.md"
+                    onChange={handleFileUpload}
+                    style={{ display: 'none' }}
+                  />
+                  
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 12,
+                      padding: 32,
+                      background: 'var(--bg-base)',
+                      border: '2px dashed var(--border-subtle)',
+                      borderRadius: 12,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <Upload size={24} color="var(--text-muted)" />
+                    <div style={{ textAlign: 'center' }}>
+                      <p style={{ fontWeight: 500, color: 'var(--text-primary)', marginBottom: 4 }}>
+                        {bulkFile ? bulkFile.name : 'Click to upload file'}
+                      </p>
+                      <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                        TXT, DOC, DOCX, PDF with multiple emails
+                      </p>
+                    </div>
+                  </button>
+                  
+                  <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>
+                    Separate emails with "---" or blank lines. Subject lines starting with "Subject:" will be detected.
+                  </p>
+                </div>
+
+                {parsedEmails.length > 0 && (
+                  <div style={{ marginBottom: 20 }}>
+                    <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 12 }}>
+                      Preview ({parsedEmails.length} emails found):
+                    </p>
+                    <div style={{ maxHeight: 300, overflowY: 'auto', border: '1px solid var(--border-subtle)', borderRadius: 10 }}>
+                      {parsedEmails.map((email, i) => (
+                        <div key={i} style={{ padding: 12, borderBottom: '1px solid var(--border-subtle)' }}>
+                          <input
+                            type="text"
+                            value={email.name}
+                            onChange={(e) => {
+                              const updated = [...parsedEmails];
+                              updated[i].name = e.target.value;
+                              setParsedEmails(updated);
+                            }}
+                            style={{ marginBottom: 8, fontSize: 13 }}
+                          />
+                          {email.subject && (
+                            <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Subject: {email.subject}</p>
+                          )}
+                          <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4 }}>
+                            {email.body.slice(0, 100)}...
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <button
+                    onClick={addBulkTemplates}
+                    disabled={isSaving || parsedEmails.length === 0}
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 8,
+                      padding: '14px 20px',
+                      background: parsedEmails.length > 0 ? 'linear-gradient(135deg, #f59e0b, #ef4444)' : 'var(--bg-surface)',
+                      color: parsedEmails.length > 0 ? 'white' : 'var(--text-muted)',
+                      fontWeight: 600,
+                      fontSize: 14,
+                      border: 'none',
+                      borderRadius: 10,
+                      cursor: parsedEmails.length > 0 ? 'pointer' : 'not-allowed',
+                      opacity: isSaving ? 0.7 : 1,
+                    }}
+                  >
+                    <Save size={16} />
+                    {isSaving ? 'Saving...' : `Save ${parsedEmails.length} Templates`}
+                  </button>
+                  <button
+                    onClick={() => { setShowAddForm(false); setParsedEmails([]); setBulkFile(null); }}
+                    className="btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -354,8 +650,8 @@ export default function CEHAdminPage() {
                     {editingId === template.id ? (
                       <input
                         type="text"
-                        value={template.name}
-                        onChange={(e) => updateTemplate(template.id, 'name', e.target.value)}
+                        value={editData.name}
+                        onChange={(e) => setEditData(p => ({ ...p, name: e.target.value }))}
                         style={{ fontSize: 16, fontWeight: 600, padding: '8px 12px' }}
                       />
                     ) : (
@@ -367,7 +663,7 @@ export default function CEHAdminPage() {
                   <div style={{ display: 'flex', gap: 8 }}>
                     {editingId === template.id ? (
                       <button
-                        onClick={() => saveTemplate(template.id)}
+                        onClick={() => saveEdit(template.id)}
                         disabled={isSaving}
                         style={{
                           display: 'flex',
@@ -388,7 +684,7 @@ export default function CEHAdminPage() {
                       </button>
                     ) : (
                       <button
-                        onClick={() => setEditingId(template.id)}
+                        onClick={() => startEditing(template)}
                         style={{
                           padding: '8px 14px',
                           background: 'var(--bg-surface)',
@@ -427,8 +723,8 @@ export default function CEHAdminPage() {
                     {editingId === template.id ? (
                       <input
                         type="text"
-                        value={template.subject || ''}
-                        onChange={(e) => updateTemplate(template.id, 'subject', e.target.value)}
+                        value={editData.subject}
+                        onChange={(e) => setEditData(p => ({ ...p, subject: e.target.value }))}
                         style={{ marginTop: 4, width: '100%' }}
                       />
                     ) : (
@@ -439,8 +735,8 @@ export default function CEHAdminPage() {
 
                 {editingId === template.id ? (
                   <textarea
-                    value={template.body}
-                    onChange={(e) => updateTemplate(template.id, 'body', e.target.value)}
+                    value={editData.body}
+                    onChange={(e) => setEditData(p => ({ ...p, body: e.target.value }))}
                     rows={6}
                     style={{ width: '100%', resize: 'vertical' }}
                   />

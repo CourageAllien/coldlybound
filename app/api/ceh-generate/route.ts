@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { getStyleBySlug } from '@/lib/styles';
 import { scrapeWebsite } from '@/lib/scraper';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { supabase } from '@/lib/supabase';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -18,10 +17,17 @@ interface Template {
 
 async function getTemplates(): Promise<Template[]> {
   try {
-    const filePath = path.join(process.cwd(), 'data', 'ceh-templates.json');
-    const content = await fs.readFile(filePath, 'utf-8');
-    const data = JSON.parse(content);
-    return data.templates || [];
+    const { data, error } = await supabase
+      .from('ceh_templates')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching templates:', error);
+      return [];
+    }
+    
+    return data || [];
   } catch {
     return [];
   }
@@ -228,7 +234,6 @@ function parseMultipleEmails(response: string, companyName: string): { subject: 
     
     if (subjectMatch || bodyMatch) {
       let subject = subjectMatch ? subjectMatch[1].trim() : 'quick question';
-      // Replace placeholder with actual company name
       subject = subject.replace(/\{\{companyName\}\}/gi, companyName);
       subject = subject.replace(/\{\{company\}\}/gi, companyName);
       subject = subject.toLowerCase();
@@ -242,7 +247,6 @@ function parseMultipleEmails(response: string, companyName: string): { subject: 
     }
   }
   
-  // Ensure we have at least some emails
   if (emails.length === 0) {
     const subjectMatch = response.match(/SUBJECT:\s*(.+?)(?:\n|$)/i);
     const bodyMatch = response.match(/BODY:\s*\n?([\s\S]+)/i);
