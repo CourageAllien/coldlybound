@@ -1,0 +1,52 @@
+{
+  "id": "bullet-point",
+  "name": "Bullet Point Style",
+  "slug": "bullet-point",
+  "description": "Uses scannable bullet points to highlight key benefits or features. Perfect for busy executives who skim emails. The format makes value props instantly digestible.",
+  "bestFor": ["B2B SaaS", "technical products", "multi-feature offerings", "busy executives"],
+  "tone": "professional yet conversational",
+  "averageLength": "short",
+  "structure": ["personalized opener", "pain-point question", "context sentence", "3 bullet points", "social proof", "soft CTA"],
+  "guidelines": [
+    "Start with personalization showing you did research",
+    "Ask a relevant pain-point question early",
+    "Use exactly 3 bullet points - no more, no less",
+    "Each bullet should be a distinct, specific benefit",
+    "Include numbers, metrics, or specifics in bullets when possible",
+    "End with ONE line of social proof (if available) + soft CTA",
+    "Keep the whole email under 80 words",
+    "Bullets should be scannable in 2 seconds",
+    "Don't use generic bullet points - be specific to their situation"
+  ],
+  "examples": [
+    {
+      "id": "bullet-1",
+      "context": "CTV advertising platform reaching out to healthcare company",
+      "senderType": "AdTech SaaS",
+      "targetType": "Healthcare",
+      "subject": "streaming patients",
+      "body": "Hi Sarah,\nSaw Orthology competing in Minnesota metro areas. Quick question: Are you struggling with rising patient acquisition costs?\nOur CTV platform reaches streaming patients without traditional TV complexity:\n\n• Target Minneapolis ZIPs (725K households in network)\n• See which networks deliver real patient inquiries\n• Access Hulu, Disney, ESPN at $15-35 CPMs\n\nEHE Health achieved 2.1 ROAS tracking appointments directly from CTV campaigns.\nWorth exploring?",
+      "whyItWorks": "Opens with specific research (Minnesota metro), asks a pain-point question, then delivers 3 scannable benefits with real numbers. Ends with verified social proof and soft CTA."
+    },
+    {
+      "id": "bullet-2",
+      "context": "Sales automation tool reaching out to growing sales team",
+      "senderType": "Sales Tech",
+      "targetType": "B2B Company",
+      "subject": "scaling outbound",
+      "body": "Hi Marcus,\nNoticed TechForce just opened 3 new territories. Quick question: Is your current outbound process ready to scale?\n\nWe help sales teams 3x their pipeline without adding headcount:\n\n• Auto-personalize 1,000+ emails/day using AI\n• Sync directly with Salesforce (no manual entry)\n• A/B test subject lines with real-time analytics\n\nDropbox's SDR team cut prospecting time 65%.\nOpen to a quick demo?",
+      "whyItWorks": "Shows awareness of their growth, asks scaling question, bullets focus on specific capabilities with numbers. Social proof from recognizable company."
+    },
+    {
+      "id": "bullet-3",
+      "context": "Cybersecurity firm reaching out to fintech company",
+      "senderType": "Cybersecurity",
+      "targetType": "Fintech",
+      "subject": "compliance question",
+      "body": "Hi Jennifer,\nSaw PayFlow processing $2B+ annually. Quick thought: Are you confident your SOC 2 audit will go smoothly next quarter?\n\nWe help fintech teams stay audit-ready year-round:\n\n• Continuous compliance monitoring (not point-in-time)\n• Auto-generate evidence for 90% of SOC 2 controls\n• 48-hour gap assessment to find issues early\n\nStripe's compliance team cut audit prep from 8 weeks to 2.\nWorth a conversation?",
+      "whyItWorks": "References specific business metric ($2B), asks timely compliance question, bullets are specific to fintech compliance needs. Strong social proof."
+    }
+  ],
+  "promptTemplate": "Write a scannable bullet-point email that busy executives can digest in 10 seconds. Structure: personalized opener with research → pain-point question → brief context → 3 SPECIFIC bullet points with numbers/metrics → one line of verified social proof (only if provided) → soft CTA. Each bullet must be distinct and valuable on its own. The bullets are the star - make them compelling and specific.",
+  "isActive": true
+}
