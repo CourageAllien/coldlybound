@@ -211,6 +211,9 @@ export default function CEHForm({ onSubmit, isLoading }: CEHFormProps) {
           <option value="email-temp" style={{ background: 'var(--bg-elevated)' }}>
             ✨ Email Temp {hasTemplates ? '(Templates Available)' : '(Add templates in admin)'}
           </option>
+          <option value="sugex" style={{ background: 'var(--bg-elevated)' }}>
+            🚀 Sugex (Growth Engine X)
+          </option>
           <optgroup label="Standard Styles">
             {styles.map(style => (
               <option key={style.id} value={style.slug} style={{ background: 'var(--bg-elevated)' }}>

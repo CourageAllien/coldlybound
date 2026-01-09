@@ -1,0 +1,55 @@
+{
+  "id": "sugex",
+  "name": "Sugex (Growth Engine X)",
+  "slug": "sugex",
+  "description": "Eric Nowoslawski's Growth Engine X methodology. Data-driven, AI-personalized cold emails that lead with research, use 'poke the bear' questions, and focus on why you + why now. Optimized for high deliverability and response rates.",
+  "bestFor": ["B2B SaaS", "agencies", "professional services", "high-volume outbound", "data-enriched campaigns"],
+  "tone": "direct and researched",
+  "averageLength": "short",
+  "structure": ["why-you-why-now opener", "poke the bear question", "value prop with social proof", "friction-reducing CTA"],
+  "guidelines": [
+    "Lead with 'why you, why now?' - show you did research and explain why reaching out NOW",
+    "Subject line: 2-3 words max, lowercase, looks like a colleague sent it",
+    "Use 'poke the bear' questions - cut to their actual problems",
+    "Keep under 100 words - be direct, not salesy",
+    "Social proof must have quantitative results (percentages, numbers)",
+    "CTA should answer 'How do we make this worth their time?'",
+    "Focus on one of: Save Time, Save Money, or Make More Money",
+    "Show don't tell - include screenshots, data points, or proof",
+    "First line should work as preview text - make it personalized",
+    "Never sound like every other cold email - differentiate your mechanism",
+    "If your offer sounds generic, reframe it into specific outcomes",
+    "Don't beg or sound desperate in follow-ups"
+  ],
+  "examples": [
+    {
+      "id": "sugex-1",
+      "context": "Sales enrichment tool reaching out to sales leader",
+      "senderType": "Sales Tech",
+      "targetType": "B2B Sales Team",
+      "subject": "outbound edge",
+      "body": "{{First Name}} – I was on your site and it looks like you sell to {{job titles}}. It looked like you are trying to help {{AI generated observation}}.\n\nI had to assume you're using outbound tactics considering {{SDR Name}} is a BDR on the team.\n\nAre you thinking about how they could be leveraging better data and AI to do their prospecting?\n\nWe help companies automate cold email outreach with large databases and GPT-4.\n\nWould this be worth a chat to build a custom outbound workflow for you?",
+      "whyItWorks": "Opens with specific research (website, team member names), asks a poke-the-bear question about their current process, clear value prop, and CTA that offers something specific."
+    },
+    {
+      "id": "sugex-2",
+      "context": "Tax planning service reaching out to high net worth founders",
+      "senderType": "Financial Services",
+      "targetType": "Founders/CEOs",
+      "subject": "tax loopholes",
+      "body": "{{First Name}} – How do you know your current tax accountant is using every legal loophole to get you the most money back?\n\nMost founders I talk to are overpaying by $50-150k annually because their accountant treats them like a W-2 employee.\n\nWe specialize in founder tax strategies – things like QSBS exclusions, R&D credits, and entity restructuring that most CPAs miss.\n\nWorth a 15-min review to see if you're leaving money on the table?",
+      "whyItWorks": "Poke the bear question challenges their current solution, specific dollar amounts create urgency, lists concrete strategies (not generic 'tax help'), low-friction CTA."
+    },
+    {
+      "id": "sugex-3",
+      "context": "SaaS platform reaching out to ecommerce company",
+      "senderType": "Ecommerce Tech",
+      "targetType": "Ecommerce",
+      "subject": "sales tax",
+      "body": "{{First Name}} – I saw on BuiltWith that {{company_name}} has {{number}} technologies installed on the website.\n\nQuick question: Are you manually calculating sales tax across all those integrations, or is it automated?\n\nWe found companies your size usually spend 8-12 hours/month on compliance that could be automated.\n\nTaxJar's biggest competitor just raised prices 40%. Would you be open for my team to do a free audit of your current setup?",
+      "whyItWorks": "Uses scraped data (BuiltWith) for personalization, poke the bear about manual work, specific time savings, timely hook about competitor pricing, free audit reduces friction."
+    }
+  ],
+  "promptTemplate": "Write a Growth Engine X style cold email following Eric Nowoslawski's methodology. Structure: (1) 'Why you, why now?' opener showing specific research, (2) Poke the bear question that cuts to their actual problem, (3) Brief value prop with quantitative social proof, (4) CTA that makes it worth their time. Subject line must be 2-3 words, lowercase, like a colleague would send. Under 100 words. Focus on Save Time, Save Money, or Make More Money. Show don't tell - use data points. Never sound generic.",
+  "isActive": true
+}
