@@ -69,16 +69,18 @@ export default function CEHAdminPage() {
         }),
       });
       
-      if (res.ok) {
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
         await fetchTemplates();
         setNewTemplate({ name: '', subject: '', body: '' });
         setShowAddForm(false);
         showMessage('success', 'Template added successfully!');
       } else {
-        throw new Error('Failed to add');
+        throw new Error(data.error || 'Failed to add template');
       }
-    } catch (error) {
-      showMessage('error', 'Failed to add template');
+    } catch (error: any) {
+      showMessage('error', error.message || 'Failed to add template');
     } finally {
       setIsSaving(false);
     }
@@ -105,17 +107,19 @@ export default function CEHAdminPage() {
         }),
       });
       
-      if (res.ok) {
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
         await fetchTemplates();
         setParsedEmails([]);
         setBulkFile(null);
         setShowAddForm(false);
         showMessage('success', `${parsedEmails.length} templates added successfully!`);
       } else {
-        throw new Error('Failed to add');
+        throw new Error(data.error || 'Failed to add templates');
       }
-    } catch (error) {
-      showMessage('error', 'Failed to add templates');
+    } catch (error: any) {
+      showMessage('error', error.message || 'Failed to add templates');
     } finally {
       setIsSaving(false);
     }
