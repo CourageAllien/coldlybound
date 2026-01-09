@@ -202,22 +202,39 @@ export default function CEHAdminPage() {
   const parseEmailsFromText = (text: string): { name: string; subject: string; body: string }[] => {
     const emails: { name: string; subject: string; body: string }[] = [];
     
-    // Split by common delimiters
-    const sections = text.split(/(?:^|\n)(?:---+|===+|Email\s*\d+:?|Template\s*\d+:?)(?:\n|$)/i)
-      .filter(s => s.trim().length > 20);
+    // Normalize line endings
+    const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
     
-    if (sections.length === 0) {
-      // Try splitting by double newlines
-      const altSections = text.split(/\n\s*\n\s*\n/).filter(s => s.trim().length > 20);
-      sections.push(...altSections);
+    // Split by various delimiters:
+    // - "Email 1", "Email 2", "EMAIL 1:", etc.
+    // - "-----" or "=====" dividers (3+ chars)
+    // - "Template 1", "Template 2", etc.
+    // - Numbered lists: "1.", "2.", "1)", "2)" at start of line
+    const splitPattern = /(?:^|\n)(?:[-]{3,}|[=]{3,}|Email\s*#?\d+[:\.]?|Template\s*#?\d+[:\.]?|^\d+[.\)]\s)(?:\n|$)/gim;
+    
+    let sections = normalized.split(splitPattern).filter(s => s.trim().length > 15);
+    
+    // If no sections found with delimiters, try splitting by triple newlines
+    if (sections.length <= 1) {
+      sections = normalized.split(/\n\s*\n\s*\n/).filter(s => s.trim().length > 15);
+    }
+    
+    // If still only one section, try splitting by double newlines with some heuristics
+    if (sections.length <= 1 && normalized.length > 200) {
+      // Look for patterns like "Hi [Name]" or greeting patterns that start emails
+      const greetingPattern = /\n(?=(?:Hi|Hey|Hello|Dear|Good morning|Good afternoon)\s+[A-Z])/gi;
+      const greetingSplits = normalized.split(greetingPattern).filter(s => s.trim().length > 15);
+      if (greetingSplits.length > 1) {
+        sections = greetingSplits;
+      }
     }
     
     sections.forEach((section, index) => {
       const trimmed = section.trim();
-      if (!trimmed) return;
+      if (!trimmed || trimmed.length < 15) return;
       
-      // Try to extract subject line
-      const subjectMatch = trimmed.match(/(?:subject|subj|re):\s*(.+?)(?:\n|$)/i);
+      // Try to extract subject line (various formats)
+      const subjectMatch = trimmed.match(/(?:subject|subj|sub|re)[:\s-]+(.+?)(?:\n|$)/i);
       const subject = subjectMatch ? subjectMatch[1].trim() : '';
       
       // Body is everything else
@@ -226,9 +243,12 @@ export default function CEHAdminPage() {
         body = trimmed.replace(subjectMatch[0], '').trim();
       }
       
+      // Clean up body - remove leading numbers or "Email X:" if present
+      body = body.replace(/^(?:Email\s*#?\d+[:\.]?\s*|Template\s*#?\d+[:\.]?\s*|\d+[.\)]\s*)/i, '').trim();
+      
       if (body.length > 10) {
         emails.push({
-          name: `Template ${index + 1}`,
+          name: `Email ${index + 1}`,
           subject,
           body,
         });
@@ -517,7 +537,7 @@ export default function CEHAdminPage() {
                   </button>
                   
                   <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>
-                    Separate emails with "---" or blank lines. Subject lines starting with "Subject:" will be detected.
+                    Separate emails with: <strong>"Email 1", "Email 2"</strong> • <strong>"-----"</strong> dividers • <strong>numbered lists (1. 2. 3.)</strong> • or <strong>triple line breaks</strong>. Subject lines with "Subject:" will be auto-detected.
                   </p>
                 </div>
 
