@@ -1,0 +1,48 @@
+{
+  "id": "aida-001",
+  "name": "The AIDA",
+  "slug": "aida",
+  "description": "Attention-Interest-Desire-Action. Grab attention, build interest, create desire, then prompt action.",
+  "bestFor": ["product launches", "clear value proposition", "B2B sales"],
+  "tone": "confident-professional",
+  "averageLength": "short",
+  "structure": ["attention hook", "interest builder", "desire creation", "action prompt"],
+  "guidelines": [
+    "Start with a hook that grabs attention",
+    "Build interest with a relevant insight",
+    "Create desire with proof or benefits",
+    "End with a clear call to action",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "aida-ex-001",
+      "context": "SaaS company reaching out to a growing business",
+      "senderType": "project management software",
+      "targetType": "operations director",
+      "subject": "scaling chaos",
+      "body": "Michael - growing teams often hit a wall: more people, more projects, more chaos.\n\nWe built something that eliminates the chaos without adding complexity. One dashboard, all projects, zero learning curve.\n\nCompanies like Shopify and Stripe use it to manage 500+ projects seamlessly.\n\nWorth seeing if it could work for your team?",
+      "whyItWorks": "Hook identifies pain, builds interest with solution, uses social proof"
+    },
+    {
+      "id": "aida-ex-002",
+      "context": "B2B service reaching out to a CMO",
+      "senderType": "demand generation agency",
+      "targetType": "CMO",
+      "subject": "pipeline problem",
+      "body": "Sarah - most B2B marketing teams have a pipeline problem disguised as a leads problem.\n\nThey generate plenty of leads—just not the right ones. The ones that actually close.\n\nWe help companies shift from volume to quality. One client went from 500 MQLs (3% close rate) to 150 MQLs (28% close rate). Same revenue, less waste.\n\nWant to see if we could do the same for you?",
+      "whyItWorks": "Provocative hook, reframes problem, compelling case study"
+    },
+    {
+      "id": "aida-ex-003",
+      "context": "Training company reaching out to HR",
+      "senderType": "leadership training company",
+      "targetType": "Head of L&D",
+      "subject": "leadership training",
+      "body": "Jennifer - most leadership training is forgotten within 2 weeks. Expensive, low retention, zero behavior change.\n\nWe do it differently. Short daily modules, real scenarios, peer accountability. 85% completion rate vs. industry average of 12%.\n\nGoogle and Netflix use us for their emerging leaders program.\n\nWorth a 15-minute call to see if it fits?",
+      "whyItWorks": "Challenges status quo, differentiates approach, strong social proof"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using the AIDA (Attention-Interest-Desire-Action) framework.\n\nSTRUCTURE:\n1. ATTENTION: Hook that grabs their attention\n2. INTEREST: Build interest with relevant insight\n3. DESIRE: Create desire with proof or benefits\n4. ACTION: Clear call to action\n\nRULES:\n- Start with a compelling hook\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

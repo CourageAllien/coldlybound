@@ -1,0 +1,48 @@
+{
+  "id": "ptb-001",
+  "name": "Poke the Bear",
+  "slug": "poke-the-bear",
+  "description": "Josh Braun's signature approach. Ask about potential problems they might be experiencing without pitching. Create curiosity and get them thinking about their pain.",
+  "bestFor": ["discovery-focused outreach", "consultative sales", "complex B2B", "building relationships"],
+  "tone": "curious-helpful",
+  "averageLength": "short",
+  "structure": ["observation or question about potential pain", "brief context", "curiosity-driven ask"],
+  "guidelines": [
+    "Lead with curiosity, not a pitch",
+    "Ask about problems, don't state them as facts",
+    "Never mention your product in the first email",
+    "Goal is to start a conversation, not book a meeting",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "ptb-ex-001",
+      "context": "Sales tool vendor reaching out to a sales leader",
+      "senderType": "sales enablement platform",
+      "targetType": "VP of Sales",
+      "subject": "curious about something",
+      "body": "David - do you ever get the feeling your reps spend more time updating Salesforce than actually selling?\n\nI keep hearing from sales leaders at companies your size that CRM hygiene has become a full-time job. Curious if that's true for you or if you've found a way around it.\n\nNo pitch—genuinely curious how you're handling it.",
+      "whyItWorks": "Asks about a common pain without assuming, explicitly says no pitch to lower guard"
+    },
+    {
+      "id": "ptb-ex-002",
+      "context": "Marketing consultant reaching out to a marketing director",
+      "senderType": "content strategy consultant",
+      "targetType": "Director of Content",
+      "subject": "quick question",
+      "body": "Sarah - I was looking at Beacon's blog—great content.\n\nDo you ever feel like you're publishing consistently but not seeing the organic traffic growth you expected? Like doing all the 'right things' but the needle isn't moving?\n\nWondering if that's the case or if you've cracked the code.",
+      "whyItWorks": "Compliment softens the question, asks about frustration without accusing"
+    },
+    {
+      "id": "ptb-ex-003",
+      "context": "HR tech company reaching out to a Head of People",
+      "senderType": "HR technology vendor",
+      "targetType": "Head of People",
+      "subject": "do you ever wonder",
+      "body": "Michael - I've been talking to People leaders at fast-growing companies. One thing keeps coming up.\n\nThey'll say, 'We have all this HR data, but I can't answer simple questions like which managers have highest retention.'\n\nIs that something you've run into? Or do you have visibility into that already?",
+      "whyItWorks": "Uses social proof, specific example of the pain, asks if they experience it"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using the 'Poke the Bear' framework.\n\nCORE PRINCIPLE: Ask about problems they might be experiencing. Don't tell them they have a problem—ask if they do.\n\nSTRUCTURE:\n1. OBSERVATION: Reference something you've noticed\n2. CURIOSITY: Ask if they experience this pain point\n3. OPEN DOOR: Invite them to share their perspective\n\nRULES:\n- Never pitch your product\n- Use 'I'm curious if...', 'Do you ever...'\n- Keep under 100 words\n- Subject line: 1-4 words only",
+  "isActive": true
+}

@@ -1,0 +1,48 @@
+{
+  "id": "video-001",
+  "name": "The Personalized Video",
+  "slug": "the-personalized-video",
+  "description": "Eric Nowoslawski's video-first approach. Record a personalized Loom showing their website, product, or data. The email is just the wrapper to get them to watch.",
+  "bestFor": ["complex offerings", "creative services", "demos", "high-value accounts"],
+  "tone": "personal-visual",
+  "averageLength": "short",
+  "structure": ["personal hook", "video mention", "what's in the video", "low-pressure CTA"],
+  "guidelines": [
+    "The video is the value—the email is just the intro",
+    "Show THEIR website/product in the video, not a generic demo",
+    "Keep the video 60-90 seconds max",
+    "Include bullet points previewing the content",
+    "Keep email under 75 words"
+  ],
+  "examples": [
+    {
+      "id": "video-ex-001",
+      "context": "Web developer sending a personalized site audit video",
+      "senderType": "web developer",
+      "targetType": "ecommerce founder",
+      "subject": "60 second review",
+      "body": "Sarah - made a quick video walking through Grove's homepage: [Video thumbnail]\n\nIn 60 seconds, I cover:\n- Why your hero section isn't converting (and a quick fix)\n- A mobile UX issue I spotted\n- One thing you're doing really well\n\nNo pitch—just observations. Worth a watch if you have a minute.",
+      "whyItWorks": "Personalized video preview, clear bullet points, no pitch"
+    },
+    {
+      "id": "video-ex-002",
+      "context": "Sales trainer sending a rep's call review",
+      "senderType": "sales training company",
+      "targetType": "VP of Sales",
+      "subject": "reviewed a call",
+      "body": "Amanda - found one of your rep's cold calls on YouTube (they recorded it for training).\n\n[Video thumbnail]\n\nRecorded 90 seconds of coaching notes—what they did well and two changes that could boost their connect rate.\n\nFigured you might want to see it. No obligation.",
+      "whyItWorks": "Reviewed their actual content, video provides immediate value"
+    },
+    {
+      "id": "video-ex-003",
+      "context": "Conversion optimizer sending a UX teardown",
+      "senderType": "CRO agency",
+      "targetType": "Head of Product",
+      "subject": "watched myself signup",
+      "body": "Marcus - [Video thumbnail]\n\nRecorded my screen going through Apex's trial signup. Found 3 friction points probably costing you 20-30% of potential signups.\n\nVideo is 2 minutes—I narrate exactly what I'm thinking as a first-time user.\n\nMight be useful to see how someone experiences your flow with no context.",
+      "whyItWorks": "First-person UX experience, quantified potential impact"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Personalized Video' approach.\n\nCORE PRINCIPLE: The video IS the value. The email just gets them to click play.\n\nSTRUCTURE:\n1. HOOK: Brief context about why you made the video\n2. VIDEO: Mention with [Video thumbnail] placeholder\n3. PREVIEW: Bullet what they'll learn/see\n4. SOFT CTA: No pressure, just invitation to watch\n\nRULES:\n- Keep email under 75 words\n- Include 2-3 bullet points previewing content\n- Use [Video thumbnail] as placeholder\n- Subject line: 1-4 words",
+  "isActive": true
+}

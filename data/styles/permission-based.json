@@ -1,0 +1,47 @@
+{
+  "id": "permission-001",
+  "name": "The Permission-Based",
+  "slug": "permission-based",
+  "description": "Ask for permission before pitching. Respectful, non-intrusive, works well with C-suite.",
+  "bestFor": ["C-suite executives", "high-value prospects", "respectful outreach"],
+  "tone": "respectful-professional",
+  "averageLength": "short",
+  "structure": ["brief context", "permission ask"],
+  "guidelines": [
+    "Don't pitch—ask if you CAN pitch",
+    "Extremely respectful of their time",
+    "One simple yes/no question",
+    "Keep under 50 words"
+  ],
+  "examples": [
+    {
+      "id": "permission-ex-001",
+      "context": "Respectful executive outreach",
+      "senderType": "enterprise sales",
+      "targetType": "CEO",
+      "subject": "quick ask",
+      "body": "Sarah - I have an idea about reducing your cloud infrastructure costs by 30%+ without changing providers.\n\nWould it be okay if I sent over a brief overview?",
+      "whyItWorks": "Clear value, asks permission, easy yes/no"
+    },
+    {
+      "id": "permission-ex-002",
+      "context": "Consulting outreach",
+      "senderType": "consultant",
+      "targetType": "CTO",
+      "subject": "permission",
+      "body": "Marcus - noticed your engineering team has grown 3x this year. I have some observations about scaling engineering orgs at this stage.\n\nMind if I share?",
+      "whyItWorks": "Relevant observation, asks before sharing"
+    },
+    {
+      "id": "permission-ex-003",
+      "context": "Agency outreach",
+      "senderType": "content agency",
+      "targetType": "VP Marketing",
+      "subject": "quick question",
+      "body": "Amanda - I have 3 specific content ideas for your industry that are working well right now.\n\nWould you be open to me sending them over?",
+      "whyItWorks": "Specific value teased, asks permission"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Permission-Based' approach.\n\nCORE PRINCIPLE: Ask permission before pitching. Respect their time.\n\nSTRUCTURE:\n1. CONTEXT: Brief relevant observation\n2. PERMISSION: Ask if you can share more\n\nRULES:\n- Don't pitch—ask if you CAN\n- One simple yes/no question\n- Keep under 50 words\n- Subject line: 1-3 words",
+  "isActive": true
+}

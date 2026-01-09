@@ -1,0 +1,48 @@
+{
+  "id": "antipitch-001",
+  "name": "The Anti-Pitch",
+  "slug": "the-anti-pitch",
+  "description": "Kellen Casebeer's objection-prevention approach. Address their likely objection BEFORE they think it. Disarm skepticism by acknowledging what they're probably thinking.",
+  "bestFor": ["skeptical buyers", "crowded markets", "competitive deals", "overcoming resistance"],
+  "tone": "self-aware-honest",
+  "averageLength": "short",
+  "structure": ["acknowledge likely objection", "reframe or address it", "value despite objection", "easy next step"],
+  "guidelines": [
+    "Think: 'What will they think when they see this email?'",
+    "Address their objection before they have to say it",
+    "Be honest about the objection, then offer new framing",
+    "Give genuine permission to ignore if it doesn't fit",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "antipitch-ex-001",
+      "context": "Outreach tool vendor reaching out to someone who gets many pitches",
+      "senderType": "email automation vendor",
+      "targetType": "VP of Sales",
+      "subject": "you have 5 already",
+      "body": "Sarah - I know you probably have 3-5 sales engagement tools in your stack. Last thing you need is another SDR tool email.\n\nSo I won't pitch features.\n\nBut are your reps actually using all of them? Most sales leaders I talk to have tool bloat and reps who bypass the 'official' tools.\n\nIf consolidating your stack is on your radar, might be worth a chat. Either way, no hard feelings.",
+      "whyItWorks": "Names their exact objection, pivots to real problem, gives genuine permission to ignore"
+    },
+    {
+      "id": "antipitch-ex-002",
+      "context": "Marketing agency reaching out during tough economic times",
+      "senderType": "content marketing agency",
+      "targetType": "marketing director",
+      "subject": "probably not right time",
+      "body": "Marcus - let me guess: marketing budgets are frozen and the last thing you need is an agency pitch.\n\nTotally get it.\n\nBut companies investing in content right now are getting 2-3x more organic traffic share because competitors stopped.\n\nIf you're one of those contrarian marketers, we should talk. If not, I'll check back in Q3.",
+      "whyItWorks": "Acknowledges budget reality, offers contrarian reframe"
+    },
+    {
+      "id": "antipitch-ex-003",
+      "context": "Consultant reaching out to someone who handles things in-house",
+      "senderType": "HR consultant",
+      "targetType": "Head of People",
+      "subject": "probably don't need help",
+      "body": "Jennifer - you probably have a solid HR team and don't need a consultant telling you how to do your job.\n\nFair. I'll make this quick.\n\nWe specialize in the one thing internal teams don't have time for: building career ladders and leveling frameworks from scratch.\n\nIf that's been on your Q2 list for three quarters now, might be worth outsourcing the grunt work.",
+      "whyItWorks": "Acknowledges their competence, narrows to one specific pain point"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Anti-Pitch' approach.\n\nCORE PRINCIPLE: Address their likely objection BEFORE they think it.\n\nSTRUCTURE:\n1. ACKNOWLEDGE: Name their likely objection upfront\n2. VALIDATE: Show you understand why they'd think that\n3. REFRAME: Offer a new angle to consider\n4. PERMISSION: Give them genuine permission to ignore\n\nRULES:\n- Be honest and self-aware\n- Give them a real 'out' if it's not relevant\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

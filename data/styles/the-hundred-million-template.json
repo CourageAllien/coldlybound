@@ -1,0 +1,48 @@
+{
+  "id": "hmt-001",
+  "name": "The $100M Template",
+  "slug": "the-hundred-million-template",
+  "description": "Alex Berman's famous 3-sentence cold email formula. Ultra-structured: Compliment + Case Study + CTA. Simple, repeatable, scalable.",
+  "bestFor": ["agency outreach", "lead generation", "high-volume campaigns", "service businesses"],
+  "tone": "direct-friendly",
+  "averageLength": "short",
+  "structure": ["compliment", "case study", "question CTA"],
+  "guidelines": [
+    "Exactly 3 sentences (or close to it)",
+    "Sentence 1: Genuine compliment about something specific",
+    "Sentence 2: Relevant case study with similar client",
+    "Sentence 3: Simple question asking if they want to learn more",
+    "Keep under 75 words"
+  ],
+  "examples": [
+    {
+      "id": "hmt-ex-001",
+      "context": "Video production agency reaching out to a SaaS company",
+      "senderType": "video production agency",
+      "targetType": "marketing director",
+      "subject": "quick question",
+      "body": "Rebecca - love what you're doing at Streamline—the product positioning is really clear.\n\nWe just helped Notion create a product video that got 2M views and drove a measurable spike in trial signups.\n\nWould it help to see how we could do something similar for Streamline?",
+      "whyItWorks": "Opens with specific compliment, drops recognizable social proof with result"
+    },
+    {
+      "id": "hmt-ex-002",
+      "context": "Web design agency reaching out to a growing D2C brand",
+      "senderType": "web design agency",
+      "targetType": "ecommerce founder",
+      "subject": "your site",
+      "body": "Jason - been following Grove Essentials—your branding is on point and product photography is beautiful.\n\nWe recently redesigned a similar D2C skincare brand's site and conversion rate went from 1.8% to 3.4%.\n\nWould you be open to seeing what a refresh could look like for Grove?",
+      "whyItWorks": "Specific compliment about their strengths, relevant case study with numbers"
+    },
+    {
+      "id": "hmt-ex-003",
+      "context": "SEO consultant reaching out to a B2B company",
+      "senderType": "SEO consultant",
+      "targetType": "CMO",
+      "subject": "idea for apex",
+      "body": "Maria - Apex's content quality is genuinely strong—the thought leadership pieces are well-researched.\n\nI recently helped a similar B2B company 3x their organic traffic in 6 months by fixing technical issues and building strategic backlinks.\n\nWant me to show you what quick wins might be available for Apex?",
+      "whyItWorks": "Compliment is specific and credible, case study is relevant"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The $100M Template' formula.\n\nSTRUCTURE (3 sentences):\n1. COMPLIMENT: Genuine, specific praise about something they're doing well\n2. CASE STUDY: A relevant example of work you did for a similar company with results\n3. CTA: A simple question asking if they'd like to learn more\n\nRULES:\n- Maximum 3-4 sentences total\n- Keep under 75 words\n- Subject line: 2-4 words, casual",
+  "isActive": true
+}

@@ -1,0 +1,47 @@
+{
+  "id": "mutual-001",
+  "name": "The Mutual Connection",
+  "slug": "mutual-connection",
+  "description": "Reference a shared connection, community, or interest. Create instant warmth through association.",
+  "bestFor": ["warm-ish outreach", "network leveraging", "community-based selling"],
+  "tone": "warm-friendly",
+  "averageLength": "short",
+  "structure": ["shared connection", "context", "offer", "soft ask"],
+  "guidelines": [
+    "Reference a real shared connection or community",
+    "Explain how you know them or the connection",
+    "Make the offer relevant",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "mutual-ex-001",
+      "context": "Referencing a mutual contact",
+      "senderType": "sales consultant",
+      "targetType": "VP of Sales",
+      "subject": "john suggested",
+      "body": "Amanda - John Chen mentioned you're rebuilding your outbound process. He thought we should connect.\n\nI helped John's team at Acme 2x their meeting rates last year. He said you're facing similar challenges with SDR productivity.\n\nWorth a quick call to compare notes?",
+      "whyItWorks": "Clear referral, relevant context, specific results"
+    },
+    {
+      "id": "mutual-ex-002",
+      "context": "Same community/group",
+      "senderType": "coach",
+      "targetType": "startup founder",
+      "subject": "yc founder",
+      "body": "Sarah - fellow YC founder here (W21 batch).\n\nNoticed you're going through the post-Series A scaling phase. That's when most founders hit the 'I can't do everything' wall.\n\nI coach founders through that exact transition. Worth a 15-minute chat?",
+      "whyItWorks": "Shared community, relevant timing, peer positioning"
+    },
+    {
+      "id": "mutual-ex-003",
+      "context": "Same conference/event",
+      "senderType": "agency",
+      "targetType": "marketing director",
+      "subject": "saas connect",
+      "body": "Marcus - saw you at SaaS Connect last week. Your question during the panel on attribution was exactly what I was thinking.\n\nWe help B2B companies solve that exact problem—figuring out what's actually driving pipeline.\n\nWant to continue that conversation?",
+      "whyItWorks": "Shared experience, specific reference, natural bridge"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Mutual Connection' approach.\n\nCORE PRINCIPLE: Create warmth through shared connection or community.\n\nSTRUCTURE:\n1. CONNECTION: Reference shared person/community/experience\n2. CONTEXT: Why you're reaching out\n3. OFFER: What you can help with\n4. ASK: Soft next step\n\nRULES:\n- Connection must be genuine\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

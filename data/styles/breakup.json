@@ -1,0 +1,48 @@
+{
+  "id": "breakup-001",
+  "name": "The Breakup Email",
+  "slug": "breakup",
+  "description": "The final email in a sequence. Acknowledge silence, give them an easy out, and create subtle urgency.",
+  "bestFor": ["follow-up sequences", "re-engaging cold prospects", "closing loops"],
+  "tone": "understanding-direct",
+  "averageLength": "short",
+  "structure": ["acknowledge silence", "easy out", "subtle urgency", "door open"],
+  "guidelines": [
+    "Acknowledge they haven't responded",
+    "Give them permission to say no",
+    "Create gentle urgency",
+    "Leave door open",
+    "Keep under 75 words"
+  ],
+  "examples": [
+    {
+      "id": "breakup-ex-001",
+      "context": "Final email in sequence",
+      "senderType": "sales rep",
+      "targetType": "prospect",
+      "subject": "closing the loop",
+      "body": "Amanda - I've reached out a few times and haven't heard back. Totally understand—timing might not be right.\n\nI'll assume this isn't a priority right now and won't follow up again. But if things change, the door's always open.\n\nWishing you the best.",
+      "whyItWorks": "Graceful exit, no guilt, leaves door open"
+    },
+    {
+      "id": "breakup-ex-002",
+      "context": "Last attempt to re-engage",
+      "senderType": "agency",
+      "targetType": "marketing director",
+      "subject": "one last thing",
+      "body": "Marcus - this is my last note. I know you're busy, and I don't want to be that person who won't take a hint.\n\nIf now isn't the right time for content support, no worries. Just reply 'not now' and I'll circle back in 6 months.\n\nOr if there's interest, happy to chat.",
+      "whyItWorks": "Self-aware, easy response options, respects their time"
+    },
+    {
+      "id": "breakup-ex-003",
+      "context": "Gentle close",
+      "senderType": "consultant",
+      "targetType": "CEO",
+      "subject": "quick check",
+      "body": "Sarah - been a few weeks since my last note. Want to check: should I keep you in the loop on this, or close out for now?\n\nEither way is fine—just want to respect your inbox.",
+      "whyItWorks": "Simple binary choice, respectful, easy to respond to"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Breakup Email' approach.\n\nCORE PRINCIPLE: Graceful exit that leaves door open.\n\nSTRUCTURE:\n1. ACKNOWLEDGE: They haven't responded\n2. PERMISSION: Easy out to say no\n3. DOOR OPEN: Future possibility\n\nRULES:\n- No guilt or pressure\n- Be genuinely understanding\n- Keep under 75 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

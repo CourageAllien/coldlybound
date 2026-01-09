@@ -1,0 +1,48 @@
+{
+  "id": "challenger-001",
+  "name": "The Challenger",
+  "slug": "the-challenger",
+  "description": "Jen Allen-Knuth's status quo disruption approach. Challenge their current thinking. Create 'constructive tension' by helping them see a problem they didn't know they had.",
+  "bestFor": ["complex sales", "changing mindsets", "differentiated offerings", "thought leadership"],
+  "tone": "confident-provocative",
+  "averageLength": "short",
+  "structure": ["status quo observation", "challenge or reframe", "new perspective", "invitation to explore"],
+  "guidelines": [
+    "Challenge their current way of thinking, not attack them",
+    "Present a perspective they haven't considered",
+    "Back up the challenge with insight or data",
+    "Be respectful while being provocative",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "challenger-ex-001",
+      "context": "Sales consultant challenging a company's current approach",
+      "senderType": "sales methodology consultant",
+      "targetType": "CRO",
+      "subject": "sdr team problem",
+      "body": "Amanda - hot take: your SDR-to-AE handoff model might be killing your biggest deals.\n\nSDRs optimize for meetings booked, so they book with anyone who'll say yes. But enterprise buyers want a peer conversation, not a discovery call with someone who can't answer technical questions.\n\nCompanies routing enterprise leads directly to AEs see 2-3x higher close rates on large deals.\n\nWorth a conversation about whether this applies?",
+      "whyItWorks": "Challenges conventional SDR model, provides specific insight"
+    },
+    {
+      "id": "challenger-ex-002",
+      "context": "Marketing strategist challenging content strategy",
+      "senderType": "content strategist",
+      "targetType": "VP of Marketing",
+      "subject": "more content wrong goal",
+      "body": "Marcus - I've been following Apex's content strategy. You're publishing 3-4 posts per week. More than most.\n\nBut what if consistency is actually hurting you? Companies optimize for publishing cadence, quality drops, readers start skimming.\n\nWhat if one exceptional piece per month outperformed 12 mediocre ones?\n\nWould be curious to explore this with you.",
+      "whyItWorks": "Challenges the 'more content' assumption, offers counter-intuitive reframe"
+    },
+    {
+      "id": "challenger-ex-003",
+      "context": "HR consultant challenging hiring approach",
+      "senderType": "talent acquisition consultant",
+      "targetType": "VP of Talent",
+      "subject": "job descriptions",
+      "body": "Jennifer - reviewed your recent job postings. Well-written, but doing something unintentional.\n\nStudies show when job descriptions list 10+ requirements, women and underrepresented candidates self-select out. Men apply at 60% match; women at 100%.\n\nYour Senior PM role lists 14 requirements.\n\nSimple fix: separate 'must-have' from 'nice-to-have.' One client saw 40% more diverse applicants.\n\nWorth discussing?",
+      "whyItWorks": "Challenges with specific observation, backs with research"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Challenger' approach.\n\nCORE PRINCIPLE: Challenge their current thinking. Create 'constructive tension' by presenting a perspective they haven't considered.\n\nSTRUCTURE:\n1. STATUS QUO: Reference their current approach\n2. CHALLENGE: Present a counter-intuitive insight\n3. EVIDENCE: Back up with data or observation\n4. INVITATION: Offer to explore together\n\nRULES:\n- Challenge ideas, not people\n- Be respectful while being provocative\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

@@ -1,0 +1,47 @@
+{
+  "id": "rrh-001",
+  "name": "The Research Rabbit Hole",
+  "slug": "the-research-rabbit-hole",
+  "description": "Jordan Crawford's 'Blueprint' method. Go deep with creative research—10K filings, podcast appearances, Glassdoor reviews, GitHub commits—to find unique angles no one else would find.",
+  "bestFor": ["enterprise deals", "competitive accounts", "breaking through noise", "executive outreach"],
+  "tone": "insightful-impressive",
+  "averageLength": "short",
+  "structure": ["unique research insight", "implication of finding", "connection to offer", "soft ask"],
+  "guidelines": [
+    "Find information that proves you went DEEPER than others",
+    "Use unconventional sources: 10K filings, podcasts, Glassdoor, job postings",
+    "Connect obscure data points to business implications",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "rrh-ex-001",
+      "context": "Enterprise sales rep reaching out to a CTO using 10K research",
+      "senderType": "enterprise software vendor",
+      "targetType": "CTO",
+      "subject": "your latest 10K",
+      "body": "Patricia - reading Vertex's latest 10K. Page 47 shows legacy system maintenance now consumes 34% of IT budget—up from 22% two years ago.\n\nAt that trajectory, you'll spend more on old systems than building new capabilities within 18 months.\n\nWe help companies migrate off legacy systems without 'rip and replace.' Did it for two similar financial services firms last year.\n\nWorth 20 minutes?",
+      "whyItWorks": "Cites specific page of 10K filing, quantifies their problem with their own data"
+    },
+    {
+      "id": "rrh-ex-002",
+      "context": "Recruiter reaching out after finding job posting insights",
+      "senderType": "executive recruiter",
+      "targetType": "VP of Engineering",
+      "subject": "kubernetes posting",
+      "body": "James - noticed you've reposted your Senior Kubernetes Engineer role three times in four months. Requirements keep getting more specific—now 'experience migrating from ECS to EKS.'\n\nThat profile is unicorn-rare, and they're not on job boards.\n\nI specialize in these needle-in-haystack infrastructure hires. Have three passive candidates who've done exactly that migration.\n\nWant their anonymized profiles?",
+      "whyItWorks": "Analyzed job posting evolution over time, deduced the story behind it"
+    },
+    {
+      "id": "rrh-ex-003",
+      "context": "Consultant reaching out after listening to a CEO's podcast",
+      "senderType": "operations consultant",
+      "targetType": "CEO",
+      "subject": "invest like the best",
+      "body": "Amanda - listened to your Invest Like the Best episode twice. You mentioned 'the middle management layer we never quite figured out.'\n\nYou glossed over it, but that usually means it's still painful. Most founders skip from 'I manage everyone' to 'I manage managers' without building systems.\n\nI help CEOs design that layer. Worth hearing what's worked for other post-Series B founders?",
+      "whyItWorks": "Caught a subtle admission in podcast, understood the subtext"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Research Rabbit Hole' approach.\n\nCORE PRINCIPLE: Go deeper than surface-level research. Find insights from unconventional sources.\n\nSTRUCTURE:\n1. DEEP INSIGHT: Something specific from unconventional research\n2. IMPLICATION: What this suggests about their situation\n3. BRIDGE: How you can help\n4. ASK: Low-pressure next step\n\nRULES:\n- The research should make them think 'wow, they did their homework'\n- Keep under 100 words\n- Subject line: 1-4 words only",
+  "isActive": true
+}

@@ -1,0 +1,48 @@
+{
+  "id": "ten-001",
+  "name": "The 10-30-10",
+  "slug": "the-ten-thirty-ten",
+  "description": "Kyle Coleman's structured formula. 10% personalized hook, 30% relevant value proposition, 10% clear call-to-action. Balanced, professional, effective.",
+  "bestFor": ["B2B outreach", "enterprise sales", "balanced approach", "professional contexts"],
+  "tone": "professional-balanced",
+  "averageLength": "short",
+  "structure": ["10% hook", "30% value", "10% CTA"],
+  "guidelines": [
+    "First 10%: Personalized hook about them",
+    "Middle 30%: Your value proposition tied to their situation",
+    "Final 10%: Clear, single call-to-action",
+    "Total should be 50-75 words",
+    "Keep proportions balanced"
+  ],
+  "examples": [
+    {
+      "id": "ten-ex-001",
+      "context": "Sales leader reaching out to a growing company",
+      "senderType": "revenue operations platform",
+      "targetType": "VP of Revenue",
+      "subject": "congrats on growth",
+      "body": "Amanda - congrats on scaling from 50 to 150 reps in 8 months—impressive.\n\nGrowth that fast usually breaks forecasting. Reps using different definitions, managers gaming numbers, leadership flying blind. We help companies at your stage build a single source of truth for pipeline.\n\nWorth a 15-minute call to compare notes?",
+      "whyItWorks": "Hook acknowledges their situation, value addresses likely pain, clear CTA"
+    },
+    {
+      "id": "ten-ex-002",
+      "context": "Marketing tool reaching out to a CMO",
+      "senderType": "attribution platform",
+      "targetType": "CMO",
+      "subject": "marketing math",
+      "body": "Marcus - loved your recent post on the death of last-touch attribution.\n\nYou're right—it's broken. But most alternatives create more confusion. We built an attribution model showing incrementality: what revenue would NOT have happened without each channel.\n\n15 minutes to show you how it works?",
+      "whyItWorks": "Hook references their content, value solves problem they identified"
+    },
+    {
+      "id": "ten-ex-003",
+      "context": "Consultant reaching out to a CTO",
+      "senderType": "cloud cost optimization",
+      "targetType": "CTO",
+      "subject": "aws bill",
+      "body": "Jennifer - saw you migrated to AWS last year—congrats on pulling that off.\n\nMost companies overspend 30-40% in their first year on AWS. Reserved instances, right-sizing, and spot pricing aren't intuitive. We've saved similar-sized companies $500K+ annually without touching architecture.\n\nWant to see what you might be leaving on the table?",
+      "whyItWorks": "Hook acknowledges their move, value quantifies opportunity"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The 10-30-10' formula.\n\nSTRUCTURE:\n- 10% HOOK: Personalized opener (1-2 sentences)\n- 30% VALUE: Your proposition tied to their situation (3-4 sentences)\n- 10% CTA: Clear next step (1 sentence)\n\nRULES:\n- Total should be 50-75 words\n- Hook MUST be personalized\n- Value MUST connect to their situation\n- CTA MUST be specific\n- Subject line: 1-4 words",
+  "isActive": true
+}

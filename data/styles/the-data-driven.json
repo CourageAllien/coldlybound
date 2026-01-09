@@ -1,0 +1,48 @@
+{
+  "id": "data-001",
+  "name": "The Data-Driven",
+  "slug": "the-data-driven",
+  "description": "Will Allred's Lavender-inspired approach. Use data and benchmarks to show them where they stand. Let the numbers make the case.",
+  "bestFor": ["analytical buyers", "process-oriented targets", "optimization plays", "benchmarking"],
+  "tone": "analytical-helpful",
+  "averageLength": "short",
+  "structure": ["data observation", "benchmark comparison", "implication", "offer to dig deeper"],
+  "guidelines": [
+    "Lead with a specific data point or observation",
+    "Compare to industry benchmarks",
+    "Quantify the gap or opportunity",
+    "Let the data create urgency, not sales pressure",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "data-ex-001",
+      "context": "Email performance tool reaching out to a sales team",
+      "senderType": "email optimization tool",
+      "targetType": "VP of Sales",
+      "subject": "reply rates benchmark",
+      "body": "Sarah - we analyzed 50M sales emails last quarter. Top-performing SDR teams get 12-15% reply rates. Median is 4%.\n\nRan your team's public outreach through our analyzer. Average email length is 247 words—about 3x optimal. That typically costs 30% in reply rates.\n\nWant me to send a full breakdown? Free analysis—takes 2 minutes to set up.",
+      "whyItWorks": "Specific data points, industry benchmark, identified specific gaps"
+    },
+    {
+      "id": "data-ex-002",
+      "context": "SEO tool reaching out with website performance data",
+      "senderType": "SEO analytics platform",
+      "targetType": "marketing director",
+      "subject": "core web vitals",
+      "body": "Marcus - ran a quick scan on beacon.io. Your LCP is 4.2 seconds. Google's threshold for 'good' is under 2.5.\n\nSites failing Core Web Vitals see 10-20% ranking drops. You're competing against sites loading in 1.5 seconds.\n\nFix is usually straightforward. Want me to send the full technical audit? Free for companies we'd love to work with.",
+      "whyItWorks": "Specific metrics from their site, Google benchmark, offered free value"
+    },
+    {
+      "id": "data-ex-003",
+      "context": "HR analytics tool reaching out with compensation data",
+      "senderType": "compensation benchmarking platform",
+      "targetType": "VP of People",
+      "subject": "engineering salaries",
+      "body": "Jennifer - pulled market data for senior engineers in Austin. Median is now $185k base + 0.15% equity.\n\nBased on Glassdoor and Levels.fyi, you're offering about $165k. That 11% gap probably shows up in your offer acceptance rate.\n\nCompanies below 50th percentile see 2.3x longer time-to-fill.\n\nWant a custom report across all roles? Takes 10 minutes.",
+      "whyItWorks": "Specific market data, their position vs. market, quantified consequences"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Data-Driven' approach.\n\nCORE PRINCIPLE: Let data make the case. Show them where they stand vs. benchmarks.\n\nSTRUCTURE:\n1. DATA POINT: A specific metric about their business\n2. BENCHMARK: How they compare to industry standards\n3. IMPLICATION: What this gap costs them\n4. OFFER: Provide more data or analysis\n\nRULES:\n- Lead with specific numbers\n- Use real benchmarks\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

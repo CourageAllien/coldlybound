@@ -1,0 +1,47 @@
+{
+  "id": "quick-001",
+  "name": "The Quick Question",
+  "slug": "quick-question",
+  "description": "Ultra-short format. One line of context, one question, done. Perfect for super busy targets.",
+  "bestFor": ["C-suite executives", "repeat follow-up", "simple ask"],
+  "tone": "casual-direct",
+  "averageLength": "short",
+  "structure": ["one line context", "one question"],
+  "guidelines": [
+    "Maximum 2-3 sentences",
+    "One clear question",
+    "Extremely easy to respond to",
+    "Keep under 40 words"
+  ],
+  "examples": [
+    {
+      "id": "quick-ex-001",
+      "context": "Quick outreach to a CEO",
+      "senderType": "growth advisor",
+      "targetType": "CEO",
+      "subject": "quick question",
+      "body": "Sarah - scaling from Series A to Series B with the same team that got you here?\n\nCurious if you're thinking about executive coaching for your leadership team.",
+      "whyItWorks": "One relevant observation, one simple question"
+    },
+    {
+      "id": "quick-ex-002",
+      "context": "Quick outreach to VP",
+      "senderType": "sales consultant",
+      "targetType": "VP of Sales",
+      "subject": "quick thought",
+      "body": "Michael - noticed you're hiring SDRs and AEs at the same time.\n\nWho's going to train them on your process?",
+      "whyItWorks": "Specific observation, thought-provoking question"
+    },
+    {
+      "id": "quick-ex-003",
+      "context": "Quick outreach to marketing leader",
+      "senderType": "content agency",
+      "targetType": "CMO",
+      "subject": "content question",
+      "body": "Amanda - your blog is great, but your case studies are from 2022.\n\nWant help refreshing them?",
+      "whyItWorks": "Direct observation, easy yes/no question"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Quick Question' approach.\n\nCORE PRINCIPLE: Ultra-short. One observation, one question.\n\nSTRUCTURE:\n1. One line of context/observation\n2. One clear question\n\nRULES:\n- Maximum 2-3 sentences\n- Keep under 40 words\n- Question should be easy to answer\n- Subject line: 1-3 words",
+  "isActive": true
+}

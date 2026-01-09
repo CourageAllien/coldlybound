@@ -1,0 +1,47 @@
+{
+  "id": "compliment-001",
+  "name": "The Compliment First",
+  "slug": "compliment-first",
+  "description": "Open with genuine, specific praise. Build rapport before bridging to your offer.",
+  "bestFor": ["creative outreach", "building rapport", "reaching influencers"],
+  "tone": "warm-authentic",
+  "averageLength": "short",
+  "structure": ["genuine compliment", "bridge to relevance", "soft offer"],
+  "guidelines": [
+    "Compliment must be specific and genuine",
+    "Bridge naturally to your offer",
+    "Don't be sycophantic",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "compliment-ex-001",
+      "context": "Reaching out after seeing great work",
+      "senderType": "marketing agency",
+      "targetType": "CMO",
+      "subject": "your campaign",
+      "body": "Sarah - your recent brand campaign was brilliant. The messaging hit the perfect balance of bold and relatable. Shared it with our team as an example of how B2B can feel human.\n\nWe help companies like yours extend that momentum with strategic content. Would love to explore if there's a fit.\n\nWorth a quick chat?",
+      "whyItWorks": "Specific compliment, genuine admiration, natural bridge"
+    },
+    {
+      "id": "compliment-ex-002",
+      "context": "Reaching out to a thought leader",
+      "senderType": "podcast host",
+      "targetType": "industry expert",
+      "subject": "your article",
+      "body": "Marcus - your article on the future of remote work was the best thing I've read on the topic. The section on async communication particularly resonated.\n\nI host a podcast for ops leaders and would love to have you share your perspective.\n\nInterested?",
+      "whyItWorks": "Specific reference to their content, genuine interest"
+    },
+    {
+      "id": "compliment-ex-003",
+      "context": "Reaching out after product launch",
+      "senderType": "PR agency",
+      "targetType": "startup founder",
+      "subject": "product launch",
+      "body": "Amanda - congrats on the launch! The product demo video was incredibly well done—clear value prop, no fluff.\n\nWe help startups get that kind of clarity into press coverage. Currently have a few openings.\n\nWant to explore if we could help amplify what you're building?",
+      "whyItWorks": "Timely compliment, specific observation, relevant offer"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Compliment First' approach.\n\nCORE PRINCIPLE: Open with genuine praise. Build rapport before offering.\n\nSTRUCTURE:\n1. COMPLIMENT: Specific, genuine praise\n2. BRIDGE: Natural connection to your offer\n3. OFFER: Soft ask\n\nRULES:\n- Compliment must be specific\n- Don't be sycophantic\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

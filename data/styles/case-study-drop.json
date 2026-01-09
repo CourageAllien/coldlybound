@@ -1,0 +1,47 @@
+{
+  "id": "case-001",
+  "name": "The Case Study Drop",
+  "slug": "case-study-drop",
+  "description": "Lead with a story about a similar client's success. Let the results do the selling.",
+  "bestFor": ["agencies", "consultants with proven results", "competitive markets"],
+  "tone": "confident-casual",
+  "averageLength": "short",
+  "structure": ["similar client story", "specific results", "connection to them", "offer to share more"],
+  "guidelines": [
+    "Lead with a relevant success story",
+    "Include specific numbers/results",
+    "Connect it to their situation",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "case-ex-001",
+      "context": "Agency sharing client success",
+      "senderType": "paid ads agency",
+      "targetType": "marketing director",
+      "subject": "similar company",
+      "body": "Marcus - just wrapped a campaign for a company similar to yours—B2B SaaS, $50-100M ARR, selling to enterprise.\n\nResults: 40% decrease in CAC, 3x increase in qualified pipeline, all within 90 days.\n\nTheir challenge was the same one most B2B companies face: LinkedIn ads that burn money.\n\nWant to see what we did differently?",
+      "whyItWorks": "Specific comparable, concrete results, clear ask"
+    },
+    {
+      "id": "case-ex-002",
+      "context": "Consultant sharing transformation",
+      "senderType": "sales consultant",
+      "targetType": "VP of Sales",
+      "subject": "similar team",
+      "body": "Amanda - worked with a sales team your size last quarter. 15 reps, enterprise deals, long sales cycles.\n\nThey were stuck at $2M/month. Three months later: $3.4M/month. Same team, same product.\n\nThe fix was their discovery process—reps were qualifying too fast.\n\nCurious if that sounds familiar?",
+      "whyItWorks": "Relatable scenario, impressive transformation, invites conversation"
+    },
+    {
+      "id": "case-ex-003",
+      "context": "Developer sharing project success",
+      "senderType": "web development agency",
+      "targetType": "ecommerce founder",
+      "subject": "similar store",
+      "body": "Sarah - we just finished a project for a D2C brand similar to yours—premium products, $5-10M revenue.\n\nTheir site was slow and cart abandonment was high. After rebuild: 60% faster load times, 28% increase in conversion rate.\n\nYour site has some of the same issues they had.\n\nWant me to send their case study?",
+      "whyItWorks": "Comparable brand, specific results, offers social proof"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Case Study Drop' approach.\n\nCORE PRINCIPLE: Lead with a relevant success story. Let results do the selling.\n\nSTRUCTURE:\n1. SIMILAR CLIENT: Reference a comparable company\n2. RESULTS: Specific numbers/outcomes\n3. CONNECTION: How it relates to them\n4. OFFER: Share the case study\n\nRULES:\n- Include specific numbers\n- Make the comparison relevant\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

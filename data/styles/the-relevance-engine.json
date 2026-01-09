@@ -1,0 +1,48 @@
+{
+  "id": "relevance-001",
+  "name": "The Relevance Engine",
+  "slug": "the-relevance-engine",
+  "description": "Yurii Veremchuk's scalable personalization approach. Use multiple relevance signals—company, role, timing, trigger—to create personalization that works at scale.",
+  "bestFor": ["high-volume outreach", "ABM campaigns", "scalable personalization", "multi-signal targeting"],
+  "tone": "relevant-efficient",
+  "averageLength": "short",
+  "structure": ["company signal", "role signal", "timing signal", "value + CTA"],
+  "guidelines": [
+    "Stack multiple relevance signals (not just one)",
+    "Company signal: something about their business",
+    "Role signal: something specific to their job function",
+    "Timing signal: why now",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "relevance-ex-001",
+      "context": "Sales tool reaching out with stacked signals",
+      "senderType": "sales engagement platform",
+      "targetType": "VP of Sales",
+      "subject": "12 new sdrs",
+      "body": "Amanda - Dataflow just closed Series B. You're VP of Sales, which means you own the number. You've posted 12 SDR roles in the last 3 weeks.\n\nThat combination usually means pressure to ramp new reps fast while hitting an aggressive number.\n\nWe help sales teams get new reps to productivity 40% faster.\n\nWorth a conversation?",
+      "whyItWorks": "Three clear signals, each quick to find, together create high relevance"
+    },
+    {
+      "id": "relevance-ex-002",
+      "context": "HR tech reaching out with layered signals",
+      "senderType": "employee engagement platform",
+      "targetType": "Head of People",
+      "subject": "glassdoor trend",
+      "body": "Sarah - Nexus scaled from 100 to 400 employees last year. As CHRO, you're probably feeling the culture stretch. Your Glassdoor rating dropped from 4.2 to 3.7 in 6 months.\n\nThat combination usually means growth outpaced culture.\n\nWe help companies measure and improve engagement in real-time during hypergrowth.\n\nWant to see what we're doing for similar companies?",
+      "whyItWorks": "Specific company data, role-relevant framing, third-party data creates urgency"
+    },
+    {
+      "id": "relevance-ex-003",
+      "context": "Marketing tool with multi-signal targeting",
+      "senderType": "content analytics platform",
+      "targetType": "VP of Marketing",
+      "subject": "organic in your okrs",
+      "body": "Marcus - Beacon is a B2B SaaS in project management. You lead marketing and content is clearly a priority (saw your 3 content hires). Your CEO's letter mentioned 'organic growth' as a 2024 priority.\n\nIf organic is in your OKRs, you need to know what's actually working.\n\nWe make that visible. 10 minutes to show you?",
+      "whyItWorks": "Category context, hiring signals, CEO letter reference—all quick to find"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Relevance Engine' approach.\n\nCORE PRINCIPLE: Stack multiple relevance signals to create personalization at scale.\n\nSIGNAL TYPES:\n- Company signal: Stage, industry, size, news\n- Role signal: What their job function cares about\n- Timing signal: Why reaching out NOW\n\nSTRUCTURE:\n1. Company signal - One line\n2. Role signal - One line\n3. Timing signal - One line\n4. VALUE: Connect signals to your offer\n5. CTA: Clear next step\n\nRULES:\n- Stack at least 3 signals\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

@@ -1,0 +1,48 @@
+{
+  "id": "basho-001",
+  "name": "The BASHO Sequence",
+  "slug": "the-basho-sequence",
+  "description": "Justin Michael's pattern interrupt method. Use unexpected elements—unconventional formatting, pattern breaks—to stand out in crowded inboxes.",
+  "bestFor": ["crowded markets", "breaking through noise", "creative outreach", "getting opens"],
+  "tone": "unexpected-bold",
+  "averageLength": "short",
+  "structure": ["pattern interrupt opener", "quick value", "simple ask"],
+  "guidelines": [
+    "Break patterns: unexpected subject lines, unusual formatting",
+    "First line should make them stop scrolling",
+    "Keep body short—the interrupt is the hook",
+    "Be memorable, not annoying",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "basho-ex-001",
+      "context": "SDR reaching out to a sales leader",
+      "senderType": "sales software company",
+      "targetType": "VP of Sales",
+      "subject": "inbox circus",
+      "body": "Amanda - your inbox probably looks like a circus right now. 47 SDRs sending 'quick question' and 'circling back.'\n\nHere's one that's different: we help sales teams book 40% more meetings by fixing the exact thing I'm probably doing wrong right now.\n\nMeta, I know. Worth 10 minutes?",
+      "whyItWorks": "Self-aware pattern interrupt, calls out the noise, turns weakness into strength"
+    },
+    {
+      "id": "basho-ex-002",
+      "context": "Marketing agency reaching out to a CMO",
+      "senderType": "branding agency",
+      "targetType": "CMO",
+      "subject": "delete this",
+      "body": "Marcus - (still reading? Good.)\n\nMost cold emails deserve the trash. This one might too.\n\nBut first: we made Dropbox's rebrand. And Stripe's. And Figma's.\n\nIf your brand isn't where you want it, we should talk.\n\nOr delete this. Your call.",
+      "whyItWorks": "Reverse psychology subject line, acknowledges spam reality, strong social proof"
+    },
+    {
+      "id": "basho-ex-003",
+      "context": "Consultant reaching out with unusual format",
+      "senderType": "operations consultant",
+      "targetType": "COO",
+      "subject": "not another email",
+      "body": "Jennifer - this email contains:\n- No 'I hope this finds you well'\n- No 6-paragraph pitch\n- No 'just checking in'\n\nJust this: companies at your stage usually have a 3-headed ops monster they can't name.\n\nI help name it and kill it.\n\n15 minutes?",
+      "whyItWorks": "Uses formatting for visual interest, acknowledges email fatigue"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The BASHO Sequence' approach.\n\nCORE PRINCIPLE: Break patterns to stand out. Use unexpected elements that make people stop scrolling.\n\nSTRUCTURE:\n1. INTERRUPT: Something unexpected that stops the scroll\n2. VALUE: Quick, punchy value statement\n3. ASK: Simple, low-pressure CTA\n\nRULES:\n- Keep under 100 words despite the creativity\n- Be memorable, not annoying\n- Subject line: 1-4 words, unexpected",
+  "isActive": true
+}

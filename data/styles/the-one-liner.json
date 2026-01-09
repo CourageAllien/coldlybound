@@ -1,0 +1,47 @@
+{
+  "id": "oneliner-001",
+  "name": "The One-Liner",
+  "slug": "the-one-liner",
+  "description": "Jed Mahrle's ultra-short approach. One to three sentences max. Cuts through noise by respecting time and creating intrigue.",
+  "bestFor": ["busy executives", "follow-ups", "high-volume outreach", "pattern interrupts"],
+  "tone": "ultra-concise",
+  "averageLength": "short",
+  "structure": ["single observation or hook", "one-line value prop or question"],
+  "guidelines": [
+    "Maximum 2-3 sentences",
+    "Under 40 words total",
+    "Create intrigue, don't explain everything",
+    "Works because it's so different from verbose emails"
+  ],
+  "examples": [
+    {
+      "id": "oneliner-ex-001",
+      "context": "Sales rep following up with a cold prospect",
+      "senderType": "software sales rep",
+      "targetType": "director of operations",
+      "subject": "still curious",
+      "body": "Mark - still thinking about the data migration issue you mentioned?\n\nWe solved that for Acme last month.",
+      "whyItWorks": "References past conversation, drops relevant proof, under 25 words"
+    },
+    {
+      "id": "oneliner-ex-002",
+      "context": "Consultant reaching out cold to a VP",
+      "senderType": "pricing consultant",
+      "targetType": "VP of Product",
+      "subject": "your pricing page",
+      "body": "Lisa - most SaaS companies leave 20-30% of revenue on the table with their pricing page.\n\nCurious if you've tested yours recently?",
+      "whyItWorks": "Provocative claim, relevant to their role, question invites response"
+    },
+    {
+      "id": "oneliner-ex-003",
+      "context": "Recruiter reaching out to a passive candidate",
+      "senderType": "executive recruiter",
+      "targetType": "engineering leader",
+      "subject": "quick one",
+      "body": "David - CTO role. Pre-IPO. Fully remote. Strong equity.\n\nWorth a conversation?",
+      "whyItWorks": "Bullets the key info, no fluff, easy yes/no response"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The One-Liner' approach.\n\nCORE PRINCIPLE: Say more with less. Extreme brevity cuts through noise.\n\nSTRUCTURE:\n1. One hook or observation (1 sentence)\n2. One question or value statement (1 sentence)\n\nRULES:\n- MAXIMUM 40 words total\n- 2-3 sentences only\n- Subject line: 2-3 words max",
+  "isActive": true
+}

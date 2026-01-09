@@ -1,0 +1,48 @@
+{
+  "id": "pas-001",
+  "name": "The PAS",
+  "slug": "pas",
+  "description": "Problem-Agitate-Solution. Identify a pain point, make them feel it, then offer your solution as relief.",
+  "bestFor": ["service providers", "consultants", "agencies"],
+  "tone": "empathetic-professional",
+  "averageLength": "short",
+  "structure": ["problem identification", "agitation", "solution offer", "soft CTA"],
+  "guidelines": [
+    "Research their specific pain point before writing",
+    "The agitation should be realistic, not fear-mongering",
+    "Your solution should directly address the stated problem",
+    "End with a question, not a demand",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "pas-ex-001",
+      "context": "Web designer reaching out to an ecommerce store",
+      "senderType": "freelance web designer",
+      "targetType": "ecommerce store owner",
+      "subject": "checkout page",
+      "body": "Sarah - noticed your checkout takes about 8 seconds to load on mobile. For ecommerce, that's brutal—40% of shoppers abandon carts if a page takes more than 3 seconds.\n\nDuring peak season, that could mean hundreds of lost orders.\n\nI help ecommerce brands speed up their sites. Recently helped a similar store cut load time by 60% and saw conversion jump 23%.\n\nWorth a quick 15-minute call?",
+      "whyItWorks": "Specific observation, real statistic, quantified impact, relevant proof"
+    },
+    {
+      "id": "pas-ex-002",
+      "context": "Marketing consultant reaching out to a SaaS startup",
+      "senderType": "content marketing consultant",
+      "targetType": "B2B SaaS founder",
+      "subject": "blog traffic",
+      "body": "Marcus - I've been reading the Flowbase blog—your workflow automation article was genuinely insightful. But noticed something: great content, no clear path to conversion.\n\nNo lead magnets, no CTAs beyond 'sign up for demo.' You're probably getting traffic that reads, learns, and leaves.\n\nI work with SaaS companies to turn content into a lead engine. Just helped one go from 12 to 340 email signups per month.\n\nWorth a chat?",
+      "whyItWorks": "Genuine compliment, specific problem, relevant case study with numbers"
+    },
+    {
+      "id": "pas-ex-003",
+      "context": "Bookkeeper reaching out to a growing agency",
+      "senderType": "bookkeeping service",
+      "targetType": "creative agency owner",
+      "subject": "tax season",
+      "body": "Jordan - congrats on the growth at Pixel & Frame—saw you just added three new team members.\n\nBut here's what I see with agencies scaling fast: receipts piling up, contractor payments getting fuzzy, and come April you're staring at a shoebox of chaos.\n\nI handle bookkeeping specifically for creative agencies. My clients go into tax season with clean books.\n\nWorth a quick chat before Q4 gets crazy?",
+      "whyItWorks": "Timely hook, acknowledges success, vivid agitation, niche positioning"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using the PAS (Problem-Agitate-Solution) framework.\n\nSTRUCTURE:\n1. PROBLEM: Identify a specific, observable pain point\n2. AGITATE: Make them feel the cost/consequences\n3. SOLUTION: Position sender as someone who can solve this\n4. CTA: Soft, low-commitment ask (question format)\n\nRULES:\n- Be specific, not generic\n- Use real observations from their website\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

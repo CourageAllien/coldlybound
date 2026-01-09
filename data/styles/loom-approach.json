@@ -1,0 +1,47 @@
+{
+  "id": "loom-001",
+  "name": "The Loom Approach",
+  "slug": "loom-approach",
+  "description": "Mention a personalized video you've recorded. Create curiosity and show effort.",
+  "bestFor": ["creative services", "demos", "complex offerings"],
+  "tone": "personal-casual",
+  "averageLength": "short",
+  "structure": ["mention video", "what's in it", "soft CTA"],
+  "guidelines": [
+    "Reference a personalized video",
+    "Preview what they'll see",
+    "Keep the email short—video is the value",
+    "Keep under 75 words"
+  ],
+  "examples": [
+    {
+      "id": "loom-ex-001",
+      "context": "Personalized video outreach",
+      "senderType": "web designer",
+      "targetType": "ecommerce owner",
+      "subject": "made you something",
+      "body": "Sarah - recorded a quick video walking through your site: [Video thumbnail]\n\nCovered 3 things: a mobile UX issue, why your product pages aren't converting, and one thing you're doing really well.\n\n90 seconds, no pitch.",
+      "whyItWorks": "Personalized effort, clear preview, no pressure"
+    },
+    {
+      "id": "loom-ex-002",
+      "context": "Sales training video",
+      "senderType": "sales trainer",
+      "targetType": "VP of Sales",
+      "subject": "for your team",
+      "body": "Amanda - [Video thumbnail]\n\nRecorded a quick teardown of a cold call I found online. Shows exactly why most openers fail and a simple fix.\n\nMight be useful for your team. 2 minutes.",
+      "whyItWorks": "Immediate value, specific preview, short commitment"
+    },
+    {
+      "id": "loom-ex-003",
+      "context": "Product demo video",
+      "senderType": "SaaS company",
+      "targetType": "Head of Ops",
+      "subject": "demo for you",
+      "body": "Marcus - [Video thumbnail]\n\nBuilt a quick demo using YOUR company data. Shows how we'd solve the workflow problem you mentioned on LinkedIn.\n\n3 minutes. Worth a watch?",
+      "whyItWorks": "Personalized with their data, specific to their problem"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Loom Approach'.\n\nCORE PRINCIPLE: The video is the value. Email is just the intro.\n\nSTRUCTURE:\n1. MENTION: Reference the personalized video\n2. PREVIEW: What they'll see\n3. CTA: Invite to watch\n\nRULES:\n- Use [Video thumbnail] as placeholder\n- Keep email under 75 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

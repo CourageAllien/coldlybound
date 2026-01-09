@@ -1,0 +1,48 @@
+{
+  "id": "helpful-001",
+  "name": "The Helpful Expert",
+  "slug": "the-helpful-expert",
+  "description": "Mohan Muthoo's approach. Position yourself as a genuine expert who helps first and sells second. Offer real expertise and insights without expectation of immediate return.",
+  "bestFor": ["consultative sales", "complex products", "building trust", "long sales cycles"],
+  "tone": "expert-generous",
+  "averageLength": "short",
+  "structure": ["credibility establishment", "genuine insight", "help offered", "optional next step"],
+  "guidelines": [
+    "Lead with expertise, not a pitch",
+    "Share real insight they can use immediately",
+    "Position as helpful resource, not vendor",
+    "The value should stand alone even if they never buy",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "helpful-ex-001",
+      "context": "Security expert reaching out after noticing a vulnerability",
+      "senderType": "cybersecurity consultant",
+      "targetType": "CTO",
+      "subject": "login page",
+      "body": "Marcus - I'm a security researcher specializing in SaaS apps. Noticed your login page doesn't have rate limiting enabled.\n\nThis means someone could brute-force credentials without being blocked. Usually a quick fix—add a rate limiter at the API gateway level.\n\nNot selling anything. Just thought you'd want to know. Happy to hop on a call if your team wants a walkthrough—no charge.",
+      "whyItWorks": "Leads with expertise, identifies specific fixable issue, offers free help"
+    },
+    {
+      "id": "helpful-ex-002",
+      "context": "Sales ops expert offering process help",
+      "senderType": "sales operations consultant",
+      "targetType": "VP of Sales",
+      "subject": "noticed something",
+      "body": "Amanda - I've spent 15 years in sales ops, most recently building the process at Stripe.\n\nNoticed you're hiring SDRs and AEs simultaneously in the same territories. In my experience, this creates chaos—reps stepping on each other's toes.\n\nTwo fixes that usually work:\n1. Territory freeze for new AEs while SDRs ramp\n2. Clear handoff rules before first hire starts\n\nHappy to share the playbook. Not selling anything.",
+      "whyItWorks": "Establishes credibility, identifies likely problem, offers specific solutions"
+    },
+    {
+      "id": "helpful-ex-003",
+      "context": "Marketing expert offering a framework",
+      "senderType": "brand strategist",
+      "targetType": "CMO",
+      "subject": "rebrand framework",
+      "body": "Jennifer - saw on LinkedIn that Apex is going through a rebrand. I've led 20+ of them.\n\nOne framework that always helps: the 'One Word' exercise. Get every stakeholder to write down the one word they want customers to feel. The disagreement that surfaces is where the real work lives.\n\nWant me to send the full exercise? Not gated, no signup required.",
+      "whyItWorks": "References their situation, offers specific useful framework, no strings"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Helpful Expert' approach.\n\nCORE PRINCIPLE: Be a genuine expert who helps first. Build trust through demonstrated competence.\n\nSTRUCTURE:\n1. CREDIBILITY: Brief establishment of expertise\n2. OBSERVATION: Something about their situation\n3. VALUE: Real insight they can use\n4. OPTIONAL ASK: Offer more help—make it optional\n\nRULES:\n- Insight must be genuinely useful\n- Help should stand alone\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

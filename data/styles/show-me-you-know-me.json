@@ -1,0 +1,48 @@
+{
+  "id": "smykm-001",
+  "name": "Show Me You Know Me",
+  "slug": "show-me-you-know-me",
+  "description": "Samantha McKenna's #samsales signature approach. Open with hyper-specific research that proves you've done your homework before asking for anything.",
+  "bestFor": ["enterprise sales", "C-suite outreach", "high-value prospects", "competitive deals"],
+  "tone": "personalized-professional",
+  "averageLength": "short",
+  "structure": ["specific research proof", "connection to their world", "relevant value", "respectful ask"],
+  "guidelines": [
+    "First sentence MUST reference something specific you learned about THEM",
+    "Show you understand their world, challenges, or recent moves",
+    "Never lead with yourself—lead with them",
+    "Connect your research to why you're reaching out",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "smykm-ex-001",
+      "context": "Sales leader reaching out to a VP of Sales at a growing company",
+      "senderType": "sales training company",
+      "targetType": "VP of Sales",
+      "subject": "your recent post",
+      "body": "Amanda - your comment on Chris Walker's post about 'just checking in' emails hit home.\n\nThat frustration is exactly why we built a framework that kills lazy follow-ups. We train reps to use 'value stacking'—each touchpoint adds something new.\n\nYour team at Cascade is scaling fast. Might be worth a conversation about keeping email quality high as you add headcount?\n\n15 minutes to swap ideas?",
+      "whyItWorks": "References HER actual public comment, shows genuine engagement, connects to relevant offer"
+    },
+    {
+      "id": "smykm-ex-002",
+      "context": "Consultant reaching out to a CEO who was recently on a podcast",
+      "senderType": "executive coach",
+      "targetType": "startup CEO",
+      "subject": "lenny's podcast",
+      "body": "Marcus - listened to your Lenny's Podcast episode. The part about struggling to let go of product decisions after hiring a Head of Product resonated.\n\nMost founder-mode CEOs hit that wall around 50 employees. The skill that got you here becomes what holds you back.\n\nI coach CEOs through that specific transition. Worth a 20-minute call?",
+      "whyItWorks": "References specific podcast AND specific moment, empathizes with his stated challenge"
+    },
+    {
+      "id": "smykm-ex-003",
+      "context": "Marketing agency reaching out to a CMO after seeing their recent campaign",
+      "senderType": "creative agency",
+      "targetType": "CMO",
+      "subject": "billboard on 101",
+      "body": "Jennifer - saw the Rippling billboard on the 101: 'HR software so good, you'll forget it exists.' Bold move in a space where everyone screams features.\n\nThat kind of brand confidence is rare. The contrast with competitors' billboards made it land harder.\n\nWe do creative work for B2B companies breaking out of boring. Worth a conversation about where Rippling's brand is heading next?",
+      "whyItWorks": "References specific campaign with specific copy, analyzes why it worked"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using the 'Show Me You Know Me' (SMYKM) framework.\n\nCORE PRINCIPLE: The first line must prove you've done real research on THIS specific person or company.\n\nSTRUCTURE:\n1. RESEARCH PROOF: Open with something specific about them\n2. CONNECTION: Show why this matters\n3. RELEVANCE: Bridge to why you're reaching out\n4. ASK: Respectful, low-pressure request\n\nRULES:\n- First sentence is about THEM, not you\n- Keep under 100 words\n- Subject line: 1-4 words only",
+  "isActive": true
+}

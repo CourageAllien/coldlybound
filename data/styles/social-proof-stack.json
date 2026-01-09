@@ -1,0 +1,47 @@
+{
+  "id": "social-001",
+  "name": "The Social Proof Stack",
+  "slug": "social-proof-stack",
+  "description": "Lead with impressive client names or results. Let credibility do the heavy lifting.",
+  "bestFor": ["competitive markets", "enterprise sales", "agencies with notable clients"],
+  "tone": "confident-credible",
+  "averageLength": "short",
+  "structure": ["impressive proof", "relevance to them", "offer"],
+  "guidelines": [
+    "Lead with recognizable names or impressive results",
+    "Connect to their situation",
+    "Don't just name drop—show relevance",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "social-ex-001",
+      "context": "Agency with notable clients",
+      "senderType": "design agency",
+      "targetType": "CMO",
+      "subject": "quick thought",
+      "body": "Sarah - we've designed for Stripe, Notion, and Figma. All companies that needed B2B to feel human.\n\nLooking at your current site, there's an opportunity to bring that same level of craft to your brand.\n\nWant to see what we did for each of them?",
+      "whyItWorks": "Recognizable names, relevant positioning, offers examples"
+    },
+    {
+      "id": "social-ex-002",
+      "context": "Consultant with impressive results",
+      "senderType": "sales consultant",
+      "targetType": "VP of Sales",
+      "subject": "similar teams",
+      "body": "Amanda - in the last year, we've helped 3 sales teams your size hit President's Club. Average improvement: 40% increase in quota attainment.\n\nThe pattern we see: reps who know what to say but not when or how.\n\nCurious if that sounds familiar?",
+      "whyItWorks": "Specific results, pattern insight, invites conversation"
+    },
+    {
+      "id": "social-ex-003",
+      "context": "SaaS with enterprise customers",
+      "senderType": "enterprise software",
+      "targetType": "CTO",
+      "subject": "enterprise customers",
+      "body": "Marcus - we power infrastructure for Google, Microsoft, and Amazon.\n\nCompanies choose us when reliability and scale become non-negotiable. Looking at your growth trajectory, you might be hitting that inflection point.\n\nWorth a quick architecture conversation?",
+      "whyItWorks": "Impressive names, clear positioning, relevant timing"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Social Proof Stack' approach.\n\nCORE PRINCIPLE: Let credibility do the selling. Lead with impressive proof.\n\nSTRUCTURE:\n1. PROOF: Notable clients or results\n2. RELEVANCE: Why this matters to them\n3. OFFER: Next step\n\nRULES:\n- Use recognizable names when possible\n- Connect proof to their situation\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

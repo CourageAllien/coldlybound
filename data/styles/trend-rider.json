@@ -1,0 +1,47 @@
+{
+  "id": "trend-001",
+  "name": "The Trend Rider",
+  "slug": "trend-rider",
+  "description": "Reference recent news, industry trends, or timely events. Connect them to your offer for urgency.",
+  "bestFor": ["timely outreach", "newsjacking", "competitive intelligence"],
+  "tone": "informed-helpful",
+  "averageLength": "short",
+  "structure": ["trend/news reference", "implication for them", "offer"],
+  "guidelines": [
+    "Reference something current and relevant",
+    "Show how it affects them",
+    "Position your offer as timely solution",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "trend-ex-001",
+      "context": "Referencing industry shift",
+      "senderType": "AI company",
+      "targetType": "CTO",
+      "subject": "ai shift",
+      "body": "Marcus - every major tech company announced AI features this month. The race is on.\n\nCompanies that wait 6 months to integrate AI will be 2 years behind.\n\nWe help engineering teams add AI capabilities without rebuilding from scratch.\n\nWorth a quick call to discuss your AI roadmap?",
+      "whyItWorks": "Timely trend, clear implication, relevant offer"
+    },
+    {
+      "id": "trend-ex-002",
+      "context": "Referencing regulatory change",
+      "senderType": "compliance consultant",
+      "targetType": "CFO",
+      "subject": "new regulations",
+      "body": "Sarah - new SEC requirements for climate disclosure take effect next quarter. Most companies we talk to aren't ready.\n\nWe help mid-market companies build compliant reporting processes before enforcement begins.\n\nWant to assess where you stand?",
+      "whyItWorks": "Specific regulation, deadline urgency, clear offer"
+    },
+    {
+      "id": "trend-ex-003",
+      "context": "Referencing market shift",
+      "senderType": "recruiting firm",
+      "targetType": "VP of Engineering",
+      "subject": "hiring shift",
+      "body": "Amanda - tech layoffs have flooded the market with senior talent. First time in 5 years that supply exceeds demand.\n\nCompanies hiring now are getting candidates they couldn't attract 12 months ago.\n\nWe're seeing this window last 3-6 months. Worth discussing?",
+      "whyItWorks": "Market insight, time-sensitive opportunity, clear value"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Trend Rider' approach.\n\nCORE PRINCIPLE: Tie your outreach to current events or trends for relevance.\n\nSTRUCTURE:\n1. TREND: Reference something current\n2. IMPLICATION: How it affects them\n3. OFFER: Your timely solution\n\nRULES:\n- Trend must be current and relevant\n- Show clear implication for them\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

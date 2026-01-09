@@ -1,0 +1,47 @@
+{
+  "id": "straight-001",
+  "name": "The Straight Shooter",
+  "slug": "straight-shooter",
+  "description": "Direct and no-nonsense. Who you are, what you want, why them, and a clear ask. Respects busy executives' time.",
+  "bestFor": ["busy executives", "B2B enterprise", "time-sensitive offers"],
+  "tone": "direct-professional",
+  "averageLength": "short",
+  "structure": ["who you are", "what you want", "why them", "clear ask"],
+  "guidelines": [
+    "Get to the point immediately",
+    "No fluff or pleasantries",
+    "Be clear about what you want",
+    "Keep under 75 words"
+  ],
+  "examples": [
+    {
+      "id": "straight-ex-001",
+      "context": "Sales rep reaching out to a busy executive",
+      "senderType": "sales automation platform",
+      "targetType": "VP of Sales",
+      "subject": "sales automation",
+      "body": "Amanda - I run sales at Outreach Pro. We help companies automate follow-up sequences without losing personalization.\n\nNoticed you're hiring 8 SDRs. Usually means scaling outbound is a priority.\n\nWe've helped similar teams 2x their meeting rates.\n\n15 minutes next week?",
+      "whyItWorks": "Immediate context, clear connection, direct ask"
+    },
+    {
+      "id": "straight-ex-002",
+      "context": "Consultant reaching out directly",
+      "senderType": "operations consultant",
+      "targetType": "COO",
+      "subject": "operations question",
+      "body": "Michael - I help COOs at growing companies fix operational bottlenecks.\n\nYour job postings suggest you're scaling fast. That usually breaks processes.\n\nI'd like 15 minutes to learn what's slowing you down and share what I've seen work.\n\nWorth a call?",
+      "whyItWorks": "Clear identity, relevant observation, specific ask"
+    },
+    {
+      "id": "straight-ex-003",
+      "context": "Agency reaching out directly",
+      "senderType": "design agency",
+      "targetType": "CMO",
+      "subject": "design help",
+      "body": "Sarah - we're a design agency that works exclusively with B2B SaaS companies.\n\nYour product is strong but your website doesn't reflect it. Noticed several UX issues that are likely hurting conversions.\n\nWant me to send a quick video walkthrough? No charge.",
+      "whyItWorks": "Clear positioning, direct observation, immediate value offer"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Straight Shooter' approach.\n\nCORE PRINCIPLE: Get to the point. No fluff.\n\nSTRUCTURE:\n1. WHO: Brief intro of who you are\n2. WHAT: What you want/offer\n3. WHY: Why them specifically\n4. ASK: Clear next step\n\nRULES:\n- No fluff or pleasantries\n- Keep under 75 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

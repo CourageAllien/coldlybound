@@ -1,0 +1,47 @@
+{
+  "id": "before-001",
+  "name": "The Before/After",
+  "slug": "before-after",
+  "description": "Paint a vivid picture of their current state, then show them the transformed future. You're the bridge.",
+  "bestFor": ["transformation services", "coaching", "design/rebranding"],
+  "tone": "empathetic-aspirational",
+  "averageLength": "short",
+  "structure": ["current state (before)", "future state (after)", "you as bridge", "invitation"],
+  "guidelines": [
+    "Make 'before' relatable and specific",
+    "Make 'after' compelling and achievable",
+    "Position yourself as the bridge",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "before-ex-001",
+      "context": "Coach reaching out to overwhelmed founder",
+      "senderType": "executive coach",
+      "targetType": "startup founder",
+      "subject": "founder mode",
+      "body": "Sarah - right now: back-to-back meetings, hiring fires, 60-hour weeks, wondering when you'll get to actually build.\n\nSix months from now: focused calendar, trusted leadership team, working ON the business not just IN it.\n\nI help founders make that shift. Most get there in 90 days.\n\nWorth a conversation?",
+      "whyItWorks": "Relatable 'before', aspirational 'after', clear transformation"
+    },
+    {
+      "id": "before-ex-002",
+      "context": "Agency reaching out about rebrand",
+      "senderType": "branding agency",
+      "targetType": "CMO",
+      "subject": "brand evolution",
+      "body": "Marcus - right now: your product has evolved but your brand hasn't. Messaging feels dated, visual identity blends in.\n\nAfter rebrand: brand matches the product's ambition. Stands out in a crowded market. Customers get it immediately.\n\nWe've done this for 50+ B2B companies.\n\nWant to explore what that could look like for you?",
+      "whyItWorks": "Specific current pain, clear vision of after"
+    },
+    {
+      "id": "before-ex-003",
+      "context": "Consultant reaching out about process",
+      "senderType": "operations consultant",
+      "targetType": "COO",
+      "subject": "process transformation",
+      "body": "Amanda - today: projects slip, handoffs fail, nobody knows who owns what.\n\nThree months from now: clear workflows, accountability, projects finishing on time.\n\nI help growing companies build the operational foundation that makes scaling possible.\n\nWorth 15 minutes to discuss?",
+      "whyItWorks": "Vivid before, clear after, positioned as guide"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Before/After' approach.\n\nCORE PRINCIPLE: Paint current state, show transformed future, position as bridge.\n\nSTRUCTURE:\n1. BEFORE: Their current frustrating state\n2. AFTER: The transformed future\n3. BRIDGE: You help them get there\n4. INVITATION: Soft ask\n\nRULES:\n- Make 'before' relatable\n- Make 'after' aspirational\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

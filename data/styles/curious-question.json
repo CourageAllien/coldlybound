@@ -1,0 +1,47 @@
+{
+  "id": "curious-001",
+  "name": "The Curious Question",
+  "slug": "curious-question",
+  "description": "Lead with an intriguing, thought-provoking question that gets them thinking. Start a conversation.",
+  "bestFor": ["starting conversations", "executive outreach", "complex sales"],
+  "tone": "thoughtful-curious",
+  "averageLength": "short",
+  "structure": ["intriguing question", "brief context", "invitation"],
+  "guidelines": [
+    "Question should make them think",
+    "Be genuinely curious, not leading",
+    "Follow with brief context",
+    "Keep under 75 words"
+  ],
+  "examples": [
+    {
+      "id": "curious-ex-001",
+      "context": "Thought-provoking outreach",
+      "senderType": "strategy consultant",
+      "targetType": "CEO",
+      "subject": "honest question",
+      "body": "Sarah - if your top 3 competitors disappeared tomorrow, what would you do differently?\n\nI ask because most strategy is reactive—responding to what others do. I work with CEOs on proactive strategy.\n\nCurious how you'd answer that question.",
+      "whyItWorks": "Thought-provoking question, invites reflection"
+    },
+    {
+      "id": "curious-ex-002",
+      "context": "Sales insight question",
+      "senderType": "sales trainer",
+      "targetType": "VP of Sales",
+      "subject": "quick question",
+      "body": "Amanda - what percentage of your deals are lost to 'no decision'?\n\nFor most teams it's 40-60%. The fix isn't better closing—it's earlier qualification.\n\nCurious what you're seeing on your team.",
+      "whyItWorks": "Specific question, provides insight, invites response"
+    },
+    {
+      "id": "curious-ex-003",
+      "context": "Marketing insight question",
+      "senderType": "marketing agency",
+      "targetType": "CMO",
+      "subject": "curious",
+      "body": "Marcus - if you could only do one marketing channel for the next year, which would you pick?\n\nI ask because most companies spread too thin. The winners usually go deep on 1-2 channels.\n\nCurious what you'd choose.",
+      "whyItWorks": "Forces prioritization thinking, reveals strategy philosophy"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Curious Question' approach.\n\nCORE PRINCIPLE: Lead with a question that makes them think.\n\nSTRUCTURE:\n1. QUESTION: Intriguing, thought-provoking\n2. CONTEXT: Brief explanation of why you ask\n3. INVITATION: Open door to respond\n\nRULES:\n- Question should spark reflection\n- Be genuinely curious\n- Keep under 75 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

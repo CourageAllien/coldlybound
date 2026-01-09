@@ -1,0 +1,48 @@
+{
+  "id": "trigger-001",
+  "name": "The Trigger Event",
+  "slug": "the-trigger-event",
+  "description": "Patrick Spychalski's signal-based outreach. React to specific company triggers—funding rounds, new hires, product launches—with immediately relevant outreach.",
+  "bestFor": ["timely outreach", "breaking news", "competitive intelligence", "account-based marketing"],
+  "tone": "informed-timely",
+  "averageLength": "short",
+  "structure": ["trigger event reference", "implication for them", "relevant offer", "time-sensitive ask"],
+  "guidelines": [
+    "Reference a specific, recent trigger event",
+    "Explain why this event creates relevance for your outreach",
+    "Create urgency through timing, not pressure",
+    "Best when done within 48 hours of the event",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "trigger-ex-001",
+      "context": "Outreach right after a company announces a funding round",
+      "senderType": "executive recruiter",
+      "targetType": "VP of Engineering",
+      "subject": "congrats on series b",
+      "body": "Rachel - saw the news about Quantum's $40M Series B. Congrats.\n\nIn my experience, Series B means 'double the engineering team in 12 months.' And that means a lot of time on hiring instead of building.\n\nWe specialize in senior engineering hires for post-Series B companies. Just placed 4 staff engineers at a similar-stage company in 8 weeks.\n\nWant to get ahead of the hiring curve?",
+      "whyItWorks": "Immediate timing on trigger, understands the implication"
+    },
+    {
+      "id": "trigger-ex-002",
+      "context": "Outreach after a company posts a new leadership hire",
+      "senderType": "management consultant",
+      "targetType": "newly hired COO",
+      "subject": "first 90 days",
+      "body": "Michael - congrats on the COO role at Vertex—saw the announcement.\n\nFirst 90 days in a new exec seat are critical. You're probably getting pulled in 15 directions while trying to figure out what's actually broken.\n\nI work with incoming C-suite execs during this window—prioritize, diagnose, build quick wins.\n\nWould a 20-minute call be useful in your first couple weeks?",
+      "whyItWorks": "References specific trigger, understands challenge of new role"
+    },
+    {
+      "id": "trigger-ex-003",
+      "context": "Outreach after a company launches a new product",
+      "senderType": "PR agency",
+      "targetType": "VP of Marketing",
+      "subject": "nice launch",
+      "body": "Amanda - saw the Atlas 2.0 launch yesterday—product video was clean, positioning sharp.\n\nLaunches create a 2-week window where press and influencers are paying attention. After that, back to competing for mindshare.\n\nWe help companies extend that momentum with strategic media placement. Just helped a similar B2B launch land in TechCrunch and 5 industry podcasts.\n\nWant to maximize the window while it's open?",
+      "whyItWorks": "References specific launch, creates urgency around timing"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Trigger Event' approach.\n\nCORE PRINCIPLE: React to specific company triggers with immediately relevant outreach.\n\nSTRUCTURE:\n1. TRIGGER: Reference the specific, recent event\n2. IMPLICATION: What this usually means for companies\n3. RELEVANCE: How you can help during this moment\n4. TIME-SENSITIVE ASK: Create urgency through timing\n\nRULES:\n- Trigger must be specific and recent\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}

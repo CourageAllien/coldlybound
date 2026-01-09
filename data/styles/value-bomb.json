@@ -1,0 +1,47 @@
+{
+  "id": "value-001",
+  "name": "The Value Bomb",
+  "slug": "value-bomb",
+  "description": "Lead with a free, specific insight they can use immediately. Establish expertise before asking for anything.",
+  "bestFor": ["consultants", "experts", "thought leaders"],
+  "tone": "generous-expert",
+  "averageLength": "short",
+  "structure": ["immediate value/insight", "credibility", "offer for more"],
+  "guidelines": [
+    "Give something useful upfront",
+    "The insight should stand alone",
+    "Position as expert, not salesperson",
+    "Keep under 100 words"
+  ],
+  "examples": [
+    {
+      "id": "value-ex-001",
+      "context": "SEO expert sharing an insight",
+      "senderType": "SEO consultant",
+      "targetType": "marketing manager",
+      "subject": "seo insight",
+      "body": "Marcus - quick insight: your blog posts are ranking but your product pages aren't. You're missing internal links from blog content to product pages.\n\nSimple fix: add 2-3 contextual links from your top blog posts to relevant product pages. Usually takes 30 minutes, often lifts product page rankings within weeks.\n\nI do this for B2B SaaS companies full-time. Want me to send a prioritized list of which links to add?",
+      "whyItWorks": "Immediate actionable insight, establishes expertise, offers more value"
+    },
+    {
+      "id": "value-ex-002",
+      "context": "Sales trainer sharing a tip",
+      "senderType": "sales training",
+      "targetType": "VP of Sales",
+      "subject": "discovery tip",
+      "body": "Amanda - one thing I see kill deals: reps asking 'what's your budget?' too early.\n\nInstead, try: 'What would solving this problem be worth to you?' Reframes from cost to value. Reps who switch see 15-20% higher deal sizes.\n\nI train sales teams on techniques like this. Want me to send 3 more discovery questions that work?",
+      "whyItWorks": "Specific technique, immediate use, offers more value"
+    },
+    {
+      "id": "value-ex-003",
+      "context": "HR expert sharing a framework",
+      "senderType": "HR consultant",
+      "targetType": "Head of People",
+      "subject": "retention insight",
+      "body": "Jennifer - quick tip: employees who don't have a career conversation in their first 90 days are 2x more likely to leave in year one.\n\nMost managers wait for annual reviews. Simple fix: mandate a 30-day 'career goals' check-in.\n\nI help companies build these systems. Want me to send the template we use?",
+      "whyItWorks": "Specific statistic, simple actionable fix, offers template"
+    }
+  ],
+  "promptTemplate": "You are writing a cold email using 'The Value Bomb' approach.\n\nCORE PRINCIPLE: Give something useful upfront. Establish expertise through generosity.\n\nSTRUCTURE:\n1. VALUE: Immediate actionable insight\n2. CREDIBILITY: Brief expert positioning\n3. OFFER: More value available\n\nRULES:\n- Insight must be genuinely useful\n- Should stand alone even if they never reply\n- Keep under 100 words\n- Subject line: 1-4 words",
+  "isActive": true
+}
