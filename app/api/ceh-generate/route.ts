@@ -172,9 +172,27 @@ SENDER/PRODUCT INFORMATION:
 - Website: ${senderData.url}
 - Description: ${senderData.description}
 - Key Services: ${senderData.keyPoints.join(', ') || 'None'}
+${senderData.caseStudies && senderData.caseStudies.length > 0 ? `
+VERIFIED CASE STUDIES (FROM SENDER'S WEBSITE - USE ONLY THESE):
+${senderData.caseStudies.map((cs, i) => `${i + 1}. ${cs.company}: ${cs.result}`).join('\n')}
+` : `
+NO VERIFIED CASE STUDIES FOUND - DO NOT INVENT OR MAKE UP ANY CASE STUDIES, STATISTICS, OR CLIENT NAMES.
+`}
+${senderData.testimonials && senderData.testimonials.length > 0 ? `
+VERIFIED TESTIMONIALS (FROM SENDER'S WEBSITE - USE ONLY THESE):
+${senderData.testimonials.map((t, i) => `${i + 1}. "${t.quote}" - ${t.author}${t.company ? `, ${t.company}` : ''}`).join('\n')}
+` : `
+NO VERIFIED TESTIMONIALS FOUND - DO NOT INVENT OR MAKE UP ANY TESTIMONIALS OR REVIEWS.
+`}
 
 PITCH/INTENT:
 ${intent}
+
+CRITICAL AUTHENTICITY RULE:
+- ONLY reference case studies, testimonials, statistics, or client names that are listed above
+- If no case studies or testimonials are provided, DO NOT make any up
+- NEVER invent fake companies, fake statistics, or fake quotes
+- It's better to focus on the value proposition than to use made-up social proof
 
 DIFFERENTIATION CHECK:
 - Make sure your mechanism is NOT generic (avoid saturated terms like "SEO", "Facebook ads" unless reframed)

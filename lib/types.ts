@@ -35,6 +35,19 @@ export interface EmailStyleSummary {
   tone: string;
 }
 
+export interface CaseStudy {
+  company: string;
+  result: string;
+  context?: string;
+}
+
+export interface Testimonial {
+  quote: string;
+  author?: string;
+  company?: string;
+  role?: string;
+}
+
 export interface ScrapedData {
   url: string;
   companyName: string;
@@ -42,6 +55,8 @@ export interface ScrapedData {
   keyPoints: string[];
   businessType: string;
   rawContent?: string;
+  caseStudies: CaseStudy[];      // Real case studies found on the website
+  testimonials: Testimonial[];   // Real testimonials/reviews found on the website
 }
 
 export interface GenerationInput {

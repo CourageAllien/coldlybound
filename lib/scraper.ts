@@ -1,4 +1,4 @@
-import { ScrapedData } from './types';
+import { ScrapedData, CaseStudy, Testimonial } from './types';
 
 const JINA_API_URL = 'https://r.jina.ai/';
 
@@ -36,6 +36,8 @@ export async function scrapeWebsite(url: string): Promise<ScrapedData> {
       keyPoints: [],
       businessType: 'unknown',
       rawContent: '',
+      caseStudies: [],
+      testimonials: [],
     };
   }
 }
@@ -69,6 +71,10 @@ function parseScrapedContent(url: string, content: string): ScrapedData {
   // Detect business type
   const businessType = detectBusinessType(content, url);
 
+  // Extract real case studies and testimonials
+  const caseStudies = extractCaseStudies(content);
+  const testimonials = extractTestimonials(content);
+
   return {
     url,
     companyName,
@@ -76,7 +82,121 @@ function parseScrapedContent(url: string, content: string): ScrapedData {
     keyPoints,
     businessType,
     rawContent: content.substring(0, 3000), // Limit raw content
+    caseStudies,
+    testimonials,
   };
+}
+
+function extractCaseStudies(content: string): CaseStudy[] {
+  const caseStudies: CaseStudy[] = [];
+  const lowerContent = content.toLowerCase();
+  
+  // Look for percentage-based results with company names
+  // Patterns like "Company X increased Y by Z%", "helped X achieve Y%", etc.
+  const resultPatterns = [
+    // "Company increased/improved metric by X%"
+    /([A-Z][a-zA-Z0-9\s&]+?)(?:\s+(?:increased|improved|boosted|grew|achieved|saw|experienced|gained))\s+(?:their\s+)?([a-zA-Z\s]+?)\s+(?:by\s+)?(\d+(?:\.\d+)?%)/gi,
+    // "X% increase/improvement for Company"
+    /(\d+(?:\.\d+)?%)\s+(?:increase|improvement|growth|boost|lift)\s+(?:in\s+)?([a-zA-Z\s]+?)\s+(?:for|with|at)\s+([A-Z][a-zA-Z0-9\s&]+)/gi,
+    // "helped Company achieve X%"
+    /helped\s+([A-Z][a-zA-Z0-9\s&]+?)\s+(?:achieve|reach|get|see)\s+(?:a\s+)?(\d+(?:\.\d+)?%)\s+([a-zA-Z\s]+)/gi,
+  ];
+
+  for (const pattern of resultPatterns) {
+    let match;
+    while ((match = pattern.exec(content)) !== null && caseStudies.length < 5) {
+      const fullMatch = match[0];
+      // Extract company name (usually the capitalized words)
+      const companyMatch = fullMatch.match(/([A-Z][a-zA-Z0-9]+(?:\s+[A-Z][a-zA-Z0-9]+)*)/);
+      const percentMatch = fullMatch.match(/(\d+(?:\.\d+)?%)/);
+      
+      if (companyMatch && percentMatch) {
+        const company = companyMatch[1].trim();
+        // Filter out generic words that aren't company names
+        const genericWords = ['The', 'Our', 'Their', 'This', 'That', 'With', 'For', 'And', 'But'];
+        if (!genericWords.includes(company) && company.length > 2) {
+          caseStudies.push({
+            company: company,
+            result: fullMatch.substring(0, 150).trim(),
+          });
+        }
+      }
+    }
+  }
+
+  // Also look for named client mentions with results
+  const clientPatterns = [
+    /(?:client|customer|partner)\s+([A-Z][a-zA-Z0-9\s&]+?)\s+(?:achieved|saw|experienced|reported)\s+(.+?)(?:\.|$)/gi,
+    /(?:case study|success story):\s*([A-Z][a-zA-Z0-9\s&]+?)\s*[-–—]\s*(.+?)(?:\.|$)/gi,
+  ];
+
+  for (const pattern of clientPatterns) {
+    let match;
+    while ((match = pattern.exec(content)) !== null && caseStudies.length < 5) {
+      if (match[1] && match[2]) {
+        caseStudies.push({
+          company: match[1].trim(),
+          result: match[2].trim().substring(0, 150),
+        });
+      }
+    }
+  }
+
+  // Deduplicate by company name
+  const seen = new Set<string>();
+  return caseStudies.filter(cs => {
+    const key = cs.company.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, 3); // Return max 3 case studies
+}
+
+function extractTestimonials(content: string): Testimonial[] {
+  const testimonials: Testimonial[] = [];
+  
+  // Look for quoted text (testimonials are usually in quotes)
+  const quotePatterns = [
+    // Standard quotes with attribution
+    /"([^"]{30,300})"\s*[-–—]\s*([A-Z][a-zA-Z\s]+?)(?:,\s*([^,\n]+?))?(?:,\s*([^,\n]+?))?(?:\n|$)/g,
+    // Smart quotes
+    /"([^"]{30,300})"\s*[-–—]\s*([A-Z][a-zA-Z\s]+?)(?:,\s*([^,\n]+?))?(?:,\s*([^,\n]+?))?(?:\n|$)/g,
+    // Blockquote style
+    />\s*"?([^>\n]{30,300})"?\s*\n\s*[-–—]?\s*([A-Z][a-zA-Z\s]+)/g,
+  ];
+
+  for (const pattern of quotePatterns) {
+    let match;
+    while ((match = pattern.exec(content)) !== null && testimonials.length < 5) {
+      const quote = match[1]?.trim();
+      const author = match[2]?.trim();
+      const roleOrCompany1 = match[3]?.trim();
+      const roleOrCompany2 = match[4]?.trim();
+      
+      if (quote && quote.length > 30 && author) {
+        // Filter out generic placeholder text
+        const placeholders = ['lorem ipsum', 'placeholder', 'example quote', 'testimonial here'];
+        const lowerQuote = quote.toLowerCase();
+        if (!placeholders.some(p => lowerQuote.includes(p))) {
+          testimonials.push({
+            quote: quote.substring(0, 200),
+            author: author,
+            role: roleOrCompany1,
+            company: roleOrCompany2 || roleOrCompany1,
+          });
+        }
+      }
+    }
+  }
+
+  // Deduplicate by quote content
+  const seen = new Set<string>();
+  return testimonials.filter(t => {
+    const key = t.quote.substring(0, 50).toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, 3); // Return max 3 testimonials
 }
 
 function extractCompanyNameFromUrl(url: string): string {

@@ -118,6 +118,25 @@ SENDER INFORMATION (the product/service being pitched):
 - Business type: ${senderData.businessType}
 ${senderData.rawContent ? `\nWebsite content:\n${senderData.rawContent.slice(0, 1500)}` : ''}
 
+${senderData.caseStudies && senderData.caseStudies.length > 0 ? `
+VERIFIED CASE STUDIES (FROM SENDER'S WEBSITE - YOU MAY REFERENCE ONLY THESE):
+${senderData.caseStudies.map((cs, i) => `${i + 1}. ${cs.company}: ${cs.result}`).join('\n')}
+` : `
+NO CASE STUDIES FOUND ON WEBSITE - DO NOT MAKE UP ANY CASE STUDIES OR STATISTICS.
+`}
+${senderData.testimonials && senderData.testimonials.length > 0 ? `
+VERIFIED TESTIMONIALS (FROM SENDER'S WEBSITE - YOU MAY REFERENCE ONLY THESE):
+${senderData.testimonials.map((t, i) => `${i + 1}. "${t.quote}" - ${t.author}${t.company ? `, ${t.company}` : ''}`).join('\n')}
+` : `
+NO TESTIMONIALS FOUND ON WEBSITE - DO NOT MAKE UP ANY TESTIMONIALS OR REVIEWS.
+`}
+
+CRITICAL AUTHENTICITY RULE:
+- ONLY reference case studies, testimonials, statistics, or client names that are listed above
+- If no case studies or testimonials are provided, DO NOT invent any - focus on the value proposition instead
+- NEVER fabricate company names, percentage improvements, or quotes
+- Real social proof beats fake social proof - use none if you have none
+
 EMAIL INTENT (what the sender wants to achieve):
 ${intent}
 
