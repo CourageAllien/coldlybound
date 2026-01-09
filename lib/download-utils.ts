@@ -1,7 +1,5 @@
 'use client';
 
-import { jsPDF } from 'jspdf';
-
 interface Email {
   subject: string;
   body: string;
@@ -17,7 +15,10 @@ interface DownloadOptions {
 /**
  * Download all emails as a PDF file
  */
-export function downloadAsPDF({ emails, filename = 'generated-emails', style, targetCompany }: DownloadOptions): void {
+export async function downloadAsPDF({ emails, filename = 'generated-emails', style, targetCompany }: DownloadOptions): Promise<void> {
+  // Dynamic import to avoid SSR issues
+  const { jsPDF } = await import('jspdf');
+  
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 20;
@@ -199,8 +200,8 @@ export function downloadAsDOC({ emails, filename = 'generated-emails', style, ta
 /**
  * Download current email only
  */
-export function downloadSingleEmailAsPDF(email: Email, index: number, style?: string, targetCompany?: string): void {
-  downloadAsPDF({
+export async function downloadSingleEmailAsPDF(email: Email, index: number, style?: string, targetCompany?: string): Promise<void> {
+  await downloadAsPDF({
     emails: [email],
     filename: `email-${index + 1}`,
     style,
@@ -218,6 +219,7 @@ export function downloadSingleEmailAsDOC(email: Email, index: number, style?: st
 }
 
 function escapeHtml(text: string): string {
+  if (typeof document === 'undefined') return text;
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
