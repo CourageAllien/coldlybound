@@ -1,6 +1,15 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
+// Sanitize text to prevent Unicode escape sequence errors in Postgres
+function sanitizeText(text: string): string {
+  if (!text) return text;
+  // Replace backslash-u sequences that could be interpreted as Unicode escapes
+  return text
+    .replace(/\\u([0-9a-fA-F]{4})/g, '\\\\u$1')  // Escape \uXXXX patterns
+    .replace(/\\x([0-9a-fA-F]{2})/g, '\\\\x$1'); // Escape \xXX patterns
+}
+
 export async function GET() {
   try {
     // Check if Supabase is configured
@@ -46,9 +55,9 @@ export async function POST(request: Request) {
       const { data, error } = await supabase
         .from('ceh_templates')
         .insert([{
-          name: template.name,
-          subject: template.subject || null,
-          body: template.body,
+          name: sanitizeText(template.name),
+          subject: template.subject ? sanitizeText(template.subject) : null,
+          body: sanitizeText(template.body),
         }])
         .select();
 
@@ -63,9 +72,9 @@ export async function POST(request: Request) {
       const { data, error } = await supabase
         .from('ceh_templates')
         .insert(templates.map((t: { name: string; subject?: string; body: string }) => ({
-          name: t.name,
-          subject: t.subject || null,
-          body: t.body,
+          name: sanitizeText(t.name),
+          subject: t.subject ? sanitizeText(t.subject) : null,
+          body: sanitizeText(t.body),
         })))
         .select();
 
@@ -80,9 +89,9 @@ export async function POST(request: Request) {
       const { data, error } = await supabase
         .from('ceh_templates')
         .update({
-          name: template.name,
-          subject: template.subject || null,
-          body: template.body,
+          name: sanitizeText(template.name),
+          subject: template.subject ? sanitizeText(template.subject) : null,
+          body: sanitizeText(template.body),
         })
         .eq('id', template.id)
         .select();
