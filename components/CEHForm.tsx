@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { AlertCircle, Loader2, Sparkles } from 'lucide-react';
-import FileUpload from './FileUpload';
+import MultiFileUpload from './MultiFileUpload';
 
 interface CEHFormProps {
   onSubmit: (data: FormData) => void;
@@ -24,7 +24,7 @@ export default function CEHForm({ onSubmit, isLoading }: CEHFormProps) {
   const [styleSlug, setStyleSlug] = useState<string>('email-temp');
   const [intent, setIntent] = useState('');
   const [painPoint, setPainPoint] = useState<string>('make-money');
-  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [styles, setStyles] = useState<StyleOption[]>([]);
   const [hasTemplates, setHasTemplates] = useState(false);
@@ -51,7 +51,7 @@ export default function CEHForm({ onSubmit, isLoading }: CEHFormProps) {
     if (!targetUrl.trim()) newErrors.targetUrl = 'Required';
     if (!senderUrl.trim()) newErrors.senderUrl = 'Required';
     if (!intent.trim()) newErrors.intent = 'Required';
-    if (!attachedFile) newErrors.file = 'Please attach a file';
+    if (attachedFiles.length === 0) newErrors.file = 'Please attach at least one file';
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -67,7 +67,11 @@ export default function CEHForm({ onSubmit, isLoading }: CEHFormProps) {
     formData.append('styleSlug', styleSlug);
     formData.append('intent', intent.trim());
     formData.append('painPoint', painPoint);
-    formData.append('attachedFile', attachedFile!);
+    // Append all files
+    attachedFiles.forEach((file, index) => {
+      formData.append(`attachedFile${index}`, file);
+    });
+    formData.append('fileCount', attachedFiles.length.toString());
     if (targetLinkedInUrl.trim()) {
       formData.append('targetLinkedInUrl', targetLinkedInUrl.trim());
     }
@@ -244,14 +248,16 @@ export default function CEHForm({ onSubmit, isLoading }: CEHFormProps) {
       <div style={{ marginBottom: 28 }}>
         <label style={labelStyle}>
           Attach Target Info <span style={{ color: 'var(--error)' }}>*</span>
+          <span style={{ color: 'var(--text-muted)', fontWeight: 400, marginLeft: 6 }}>(max 3 files)</span>
         </label>
         
-        <FileUpload 
-          file={attachedFile}
-          onFileSelect={(file) => {
-            setAttachedFile(file);
-            if (file) setErrors(p => ({...p, file: ''}));
+        <MultiFileUpload 
+          files={attachedFiles}
+          onFilesSelect={(files) => {
+            setAttachedFiles(files);
+            if (files.length > 0) setErrors(p => ({...p, file: ''}));
           }}
+          maxFiles={3}
           error={errors.file}
         />
         

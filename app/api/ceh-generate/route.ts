@@ -44,23 +44,44 @@ export async function POST(request: Request) {
     const targetFirstName = formData.get('targetFirstName') as string;
     const targetLinkedInUrl = formData.get('targetLinkedInUrl') as string | null;
     const painPoint = formData.get('painPoint') as string;
-    const attachedFile = formData.get('attachedFile') as File | null;
+    const fileCount = parseInt(formData.get('fileCount') as string) || 0;
     
-    if (!targetUrl || !senderUrl || !intent || !targetFirstName || !attachedFile) {
+    // Collect all attached files (up to 3)
+    const attachedFiles: File[] = [];
+    for (let i = 0; i < fileCount; i++) {
+      const file = formData.get(`attachedFile${i}`) as File | null;
+      if (file) {
+        attachedFiles.push(file);
+      }
+    }
+    
+    // Fallback for old single file format
+    if (attachedFiles.length === 0) {
+      const singleFile = formData.get('attachedFile') as File | null;
+      if (singleFile) {
+        attachedFiles.push(singleFile);
+      }
+    }
+    
+    if (!targetUrl || !senderUrl || !intent || !targetFirstName || attachedFiles.length === 0) {
       return NextResponse.json(
-        { error: 'Missing required fields.' },
+        { error: 'Missing required fields. Please attach at least one file.' },
         { status: 400 }
       );
     }
     
-    // Extract file content
-    let attachedContent = '';
-    try {
-      const fileBuffer = await attachedFile.arrayBuffer();
-      attachedContent = new TextDecoder().decode(fileBuffer);
-    } catch {
-      attachedContent = `[File: ${attachedFile.name}]`;
+    // Extract content from all files
+    const attachedContents: string[] = [];
+    for (const file of attachedFiles) {
+      try {
+        const fileBuffer = await file.arrayBuffer();
+        const content = new TextDecoder().decode(fileBuffer);
+        attachedContents.push(`--- ${file.name} ---\n${content}\n---`);
+      } catch {
+        attachedContents.push(`[File: ${file.name} - could not extract content]`);
+      }
     }
+    const attachedContent = attachedContents.join('\n\n');
     
     // Scrape websites
     const [targetData, senderData] = await Promise.all([
@@ -143,7 +164,8 @@ TARGET INFORMATION:
 - Description: ${targetData.description}
 - Key Details: ${targetData.keyPoints.join(', ') || 'None'}
 ${linkedInData ? `- LinkedIn Info: ${linkedInData}` : ''}
-- Additional Context: ${attachedContent}
+- Additional Context (${attachedFiles.length} file${attachedFiles.length > 1 ? 's' : ''} attached):
+${attachedContent}
 
 SENDER/PRODUCT INFORMATION:
 - Company: ${senderData.companyName}

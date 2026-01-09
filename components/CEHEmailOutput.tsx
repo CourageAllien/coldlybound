@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Copy, Check, RefreshCw, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Copy, Check, RefreshCw, ArrowLeft, ChevronLeft, ChevronRight, Download, FileText, FileDown } from 'lucide-react';
+import { downloadAsPDF, downloadAsDOC, downloadSingleEmailAsPDF, downloadSingleEmailAsDOC } from '@/lib/download-utils';
 
 interface Email {
   subject: string;
@@ -229,11 +230,116 @@ export default function CEHEmailOutput({
           border: 'none',
           borderRadius: 10,
           cursor: 'pointer',
+          marginBottom: 12,
         }}
       >
         {copiedAll ? <Check size={18} /> : <Copy size={18} />}
         {copiedAll ? 'Copied Full Email!' : 'Copy Full Email'}
       </button>
+
+      {/* Download Options */}
+      <div style={{ 
+        background: 'var(--bg-surface)', 
+        borderRadius: 12, 
+        padding: 16,
+        border: '1px solid var(--border-subtle)',
+      }}>
+        <p style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-muted)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+          Download Options
+        </p>
+        
+        {/* Download Current Email */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          <button
+            onClick={() => downloadSingleEmailAsPDF(currentEmail, currentIndex, style, targetCompany)}
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '10px 16px',
+              borderRadius: 8,
+              border: '1px solid var(--border-subtle)',
+              background: 'var(--bg-elevated)',
+              color: 'var(--text-secondary)',
+              fontSize: 13,
+              fontWeight: 500,
+              cursor: 'pointer',
+            }}
+          >
+            <FileDown size={16} />
+            Email {currentIndex + 1} as PDF
+          </button>
+          <button
+            onClick={() => downloadSingleEmailAsDOC(currentEmail, currentIndex, style, targetCompany)}
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '10px 16px',
+              borderRadius: 8,
+              border: '1px solid var(--border-subtle)',
+              background: 'var(--bg-elevated)',
+              color: 'var(--text-secondary)',
+              fontSize: 13,
+              fontWeight: 500,
+              cursor: 'pointer',
+            }}
+          >
+            <FileText size={16} />
+            Email {currentIndex + 1} as DOC
+          </button>
+        </div>
+
+        {/* Download All Emails */}
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            onClick={() => downloadAsPDF({ emails, filename: 'ceh-emails', style, targetCompany })}
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '10px 16px',
+              borderRadius: 8,
+              border: '1px solid #f59e0b',
+              background: 'rgba(245, 158, 11, 0.15)',
+              color: '#f59e0b',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            <Download size={16} />
+            All {emails.length} Emails (PDF)
+          </button>
+          <button
+            onClick={() => downloadAsDOC({ emails, filename: 'ceh-emails', style, targetCompany })}
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '10px 16px',
+              borderRadius: 8,
+              border: '1px solid #f59e0b',
+              background: 'rgba(245, 158, 11, 0.15)',
+              color: '#f59e0b',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            <Download size={16} />
+            All {emails.length} Emails (DOC)
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
