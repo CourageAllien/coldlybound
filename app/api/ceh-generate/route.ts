@@ -44,6 +44,7 @@ export async function POST(request: Request) {
     const targetFirstName = formData.get('targetFirstName') as string;
     const targetLinkedInUrl = formData.get('targetLinkedInUrl') as string | null;
     const painPoint = formData.get('painPoint') as string;
+    const whatWeDo = formData.get('whatWeDo') as string | null;
     const fileCount = parseInt(formData.get('fileCount') as string) || 0;
     
     // Collect all attached files (up to 3)
@@ -140,6 +141,34 @@ Guidelines: ${style.guidelines.join(', ')}
       'save-time': 'SAVE TIME - Focus on automation, faster processes, reduced manual work, quicker results',
     }[painPoint] || painPoint;
     
+    // What We Do framework section (Sean Longden methodology)
+    const whatWeDoSection = whatWeDo ? `
+SENDER'S CORE VALUE PROPOSITION ("WHAT WE DO"):
+${whatWeDo}
+
+CRITICAL: Use this "What We Do" statement as the foundation for all emails.
+This is NOT a service category - this is a SPECIFIC OUTCOME. Use this language.
+
+SEAN LONGDEN'S 6-POINT FRAMEWORK (use these to strengthen the emails):
+1. WHAT WE DO: The specific outcome above - NOT a service category
+   ❌ "We do SEO" → ✅ "We get B2B companies ranking on page 1 for their highest-intent keywords in 90 days"
+   
+2. WHO FOR: The emails should speak directly to this prospect's situation
+   
+3. HOW: Reference the mechanism/process when relevant - show you know what you're doing
+   
+4. PROBLEMS: Lead with their problems in THEIR words, not your service
+   - They don't think "I need cold email services"
+   - They think "My pipeline is empty" or "I'm tired of relying on referrals"
+   
+5. PROOF: Only use verified case studies/testimonials from above - make them specific and relevant
+   ❌ "We've worked with over 50 companies" → ✅ "We helped [Similar Company] go from 0 to 30 booked calls/month in 60 days"
+   
+6. BENEFIT: The real benefit is [PROBLEM] solved, not generic "you'll get more leads"
+   ❌ "You'll get more leads" → ✅ "You won't have to rely on just inbound or referrals again"
+` : '';
+
+    
     const prompt = `You are an expert cold email copywriter specializing in high-converting B2B outreach. Generate 8 DIFFERENT cold emails following the CEH (Cold Email Hub) framework.
 
 CRITICAL CEH COPY RULES (MUST FOLLOW EXACTLY):
@@ -172,6 +201,7 @@ SENDER/PRODUCT INFORMATION:
 - Website: ${senderData.url}
 - Description: ${senderData.description}
 - Key Services: ${senderData.keyPoints.join(', ') || 'None'}
+${whatWeDoSection}
 ${senderData.caseStudies && senderData.caseStudies.length > 0 ? `
 VERIFIED CASE STUDIES (FROM SENDER'S WEBSITE - USE ONLY THESE):
 ${senderData.caseStudies.map((cs, i) => `${i + 1}. ${cs.company}: ${cs.result}`).join('\n')}
