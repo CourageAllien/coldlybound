@@ -16,6 +16,8 @@ interface EmailOutputProps {
   onRegenerate: () => void;
   onNewEmail: () => void;
   isRegenerating: boolean;
+  transformedWhatWeDo?: string;
+  originalWhatWeDo?: string;
 }
 
 export default function EmailOutput({ 
@@ -24,7 +26,9 @@ export default function EmailOutput({
   targetCompany, 
   onRegenerate,
   onNewEmail,
-  isRegenerating 
+  isRegenerating,
+  transformedWhatWeDo,
+  originalWhatWeDo
 }: EmailOutputProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [copiedSubject, setCopiedSubject] = useState(false);
@@ -89,6 +93,45 @@ export default function EmailOutput({
           <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Using {style} for {targetCompany}</p>
         </div>
       </div>
+
+      {/* What We Do Transformation */}
+      {originalWhatWeDo && transformedWhatWeDo && (
+        <div style={{ 
+          padding: 16, 
+          background: 'var(--bg-elevated)', 
+          borderRadius: 12, 
+          marginBottom: 24,
+          border: '1px solid var(--border-subtle)'
+        }}>
+          <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8, fontWeight: 500 }}>
+            ✨ AI TRANSFORMED YOUR VALUE PROPOSITION
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <div style={{ 
+              padding: '8px 12px', 
+              background: 'rgba(255, 90, 90, 0.1)', 
+              borderRadius: 8,
+              fontSize: 13,
+              color: 'var(--text-secondary)'
+            }}>
+              <span style={{ color: 'var(--error)', marginRight: 6 }}>❌</span>
+              &quot;{originalWhatWeDo}&quot;
+            </div>
+            <span style={{ color: 'var(--brand)', fontSize: 18 }}>→</span>
+            <div style={{ 
+              padding: '8px 12px', 
+              background: 'rgba(0, 212, 170, 0.1)', 
+              borderRadius: 8,
+              fontSize: 13,
+              color: 'var(--accent)',
+              fontWeight: 500
+            }}>
+              <span style={{ marginRight: 6 }}>✅</span>
+              &quot;{transformedWhatWeDo}&quot;
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Email Selector */}
       <div style={{ 

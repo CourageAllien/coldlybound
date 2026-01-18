@@ -16,6 +16,7 @@ export default function EmailForm({ onSubmit, isLoading }: EmailFormProps) {
   const [targetLinkedInUrl, setTargetLinkedInUrl] = useState('');
   const [senderUrl, setSenderUrl] = useState('');
   const [styleSlug, setStyleSlug] = useState<string | null>(null);
+  const [whatWeDo, setWhatWeDo] = useState('');
   const [intent, setIntent] = useState('');
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -47,6 +48,9 @@ export default function EmailForm({ onSubmit, isLoading }: EmailFormProps) {
     formData.append('attachedFile', attachedFile!);
     if (targetLinkedInUrl.trim()) {
       formData.append('targetLinkedInUrl', targetLinkedInUrl.trim());
+    }
+    if (whatWeDo.trim()) {
+      formData.append('whatWeDo', whatWeDo.trim());
     }
     
     onSubmit(formData);
@@ -136,6 +140,38 @@ export default function EmailForm({ onSubmit, isLoading }: EmailFormProps) {
           onStyleSelect={(slug) => { setStyleSlug(slug); setErrors(p => ({...p, style: ''})); }}
           error={errors.style}
         />
+      </div>
+
+      {/* What Do We Do */}
+      <div style={{ marginBottom: 20 }}>
+        <label style={labelStyle}>
+          What Do We Do? <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional - we&apos;ll enhance it)</span>
+        </label>
+        <textarea
+          value={whatWeDo}
+          onChange={(e) => setWhatWeDo(e.target.value)}
+          placeholder="e.g., We do SEO, We run paid ads, We do lead generation..."
+          rows={2}
+          style={{ resize: 'none' }}
+        />
+        <div style={{ 
+          fontSize: 12, 
+          color: 'var(--text-muted)', 
+          marginTop: 8,
+          padding: '10px 12px',
+          background: 'var(--bg-base)',
+          borderRadius: 8,
+          border: '1px solid var(--border-subtle)',
+        }}>
+          <div style={{ marginBottom: 4 }}>
+            <span style={{ color: 'var(--brand)', fontWeight: 500 }}>✨ AI Transform:</span> Type what you ARE and we convert it to what you DO
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ color: 'var(--text-muted)' }}>&quot;We do SEO&quot;</span>
+            <span style={{ color: 'var(--brand)' }}>→</span>
+            <span style={{ color: 'var(--accent)' }}>&quot;We get B2B companies ranking on page 1 in 90 days&quot;</span>
+          </div>
+        </div>
       </div>
 
       {/* Intent */}

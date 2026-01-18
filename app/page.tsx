@@ -15,6 +15,8 @@ interface GeneratedResult {
   emails: Email[];
   style: string;
   targetCompany: string;
+  transformedWhatWeDo?: string;
+  originalWhatWeDo?: string;
 }
 
 export default function Home() {
@@ -44,6 +46,8 @@ export default function Home() {
         emails: result.emails,
         style: result.style,
         targetCompany: result.targetCompany,
+        transformedWhatWeDo: result.transformedWhatWeDo,
+        originalWhatWeDo: result.originalWhatWeDo,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
@@ -120,6 +124,8 @@ export default function Home() {
               onRegenerate={handleRegenerate}
               onNewEmail={handleReset}
               isRegenerating={isLoading}
+              transformedWhatWeDo={generatedResult.transformedWhatWeDo}
+              originalWhatWeDo={generatedResult.originalWhatWeDo}
             />
           </div>
         ) : isLoading ? (

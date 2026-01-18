@@ -22,7 +22,6 @@ export default function CEHForm({ onSubmit, isLoading }: CEHFormProps) {
   const [targetLinkedInUrl, setTargetLinkedInUrl] = useState('');
   const [senderUrl, setSenderUrl] = useState('');
   const [styleSlug, setStyleSlug] = useState<string>('email-temp');
-  const [whatWeDo, setWhatWeDo] = useState('');
   const [intent, setIntent] = useState('');
   const [painPoint, setPainPoint] = useState<string>('make-money');
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
@@ -68,9 +67,6 @@ export default function CEHForm({ onSubmit, isLoading }: CEHFormProps) {
     formData.append('styleSlug', styleSlug);
     formData.append('intent', intent.trim());
     formData.append('painPoint', painPoint);
-    if (whatWeDo.trim()) {
-      formData.append('whatWeDo', whatWeDo.trim());
-    }
     // Append all files
     attachedFiles.forEach((file, index) => {
       formData.append(`attachedFile${index}`, file);
@@ -231,40 +227,6 @@ export default function CEHForm({ onSubmit, isLoading }: CEHFormProps) {
             Add template emails in the Templates page for best results with Email Temp style.
           </p>
         )}
-      </div>
-
-      {/* What Do We Do */}
-      <div style={{ marginBottom: 20 }}>
-        <label style={labelStyle}>
-          What Do We Do? <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional but powerful)</span>
-        </label>
-        <textarea
-          value={whatWeDo}
-          onChange={(e) => setWhatWeDo(e.target.value)}
-          placeholder="We [specific action] that [specific measurable outcome]&#10;&#10;Example: We build cold email systems that book 15-30 qualified calls per month"
-          rows={3}
-          style={{ 
-            resize: 'none',
-            fontFamily: 'inherit',
-          }}
-        />
-        <div style={{ 
-          fontSize: 12, 
-          color: 'var(--text-muted)', 
-          marginTop: 8,
-          padding: '10px 12px',
-          background: 'var(--bg-elevated)',
-          borderRadius: 8,
-          border: '1px solid var(--border-subtle)',
-        }}>
-          <div style={{ fontWeight: 500, color: 'var(--text-secondary)', marginBottom: 6 }}>
-            💡 Format: "We do X and Y"
-          </div>
-          <div style={{ lineHeight: 1.5 }}>
-            <span style={{ color: 'var(--error)' }}>❌</span> "We do SEO" → That's what you ARE<br/>
-            <span style={{ color: '#22c55e' }}>✅</span> "We get B2B companies ranking on page 1 for their highest-intent keywords in 90 days" → That's what you DO
-          </div>
-        </div>
       </div>
 
       {/* Intent */}

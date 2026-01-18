@@ -20,6 +20,7 @@ export async function POST(request: Request) {
     const targetFirstName = formData.get('targetFirstName') as string;
     const targetLinkedInUrl = formData.get('targetLinkedInUrl') as string | null;
     const attachedFile = formData.get('attachedFile') as File | null;
+    const whatWeDo = formData.get('whatWeDo') as string | null;
     
     // Validate required inputs
     if (!targetUrl || !senderUrl || !intent || !styleSlug || !targetFirstName || !attachedFile) {
@@ -79,7 +80,47 @@ export async function POST(request: Request) {
     
     const [targetData, senderData] = await Promise.all(scrapePromises);
     
-    // 4. Build the dynamic prompt for 5 emails
+    // 4. Transform "What We Do" from service category to specific outcome
+    let transformedWhatWeDo: string | undefined;
+    if (whatWeDo && whatWeDo.trim()) {
+      try {
+        const transformResponse = await anthropic.messages.create({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 300,
+          messages: [{
+            role: 'user',
+            content: `Transform this generic service description into a specific, outcome-focused value proposition.
+
+INPUT: "${whatWeDo}"
+
+RULES:
+- Convert what they ARE into what they DO (specific outcomes)
+- Include measurable results, timeframes, or specific benefits
+- Keep it to 1-2 sentences max
+- Make it compelling and specific
+
+EXAMPLES:
+❌ "We do SEO" → ✅ "We get B2B companies ranking on page 1 for their highest-intent keywords in 90 days"
+❌ "We run paid ads" → ✅ "We build paid ad systems that generate 3-5x ROAS within 60 days"
+❌ "We do lead generation" → ✅ "We book 15-30 qualified sales calls per month through cold outreach"
+❌ "We're a web design agency" → ✅ "We redesign websites that convert 2-3x more visitors into leads"
+❌ "We do cold email" → ✅ "We build cold email systems that book 15-30 qualified calls per month"
+
+OUTPUT only the transformed statement, nothing else:`
+          }]
+        });
+        
+        const transformedContent = transformResponse.content.find(block => block.type === 'text');
+        if (transformedContent && transformedContent.type === 'text') {
+          transformedWhatWeDo = transformedContent.text.trim().replace(/^["']|["']$/g, '');
+        }
+      } catch (e) {
+        console.log('What We Do transformation failed, using original:', e);
+        transformedWhatWeDo = whatWeDo;
+      }
+    }
+    
+    // 6. Build the dynamic prompt for 5 emails
     const prompt = buildPrompt({
       style,
       targetData,
@@ -89,6 +130,7 @@ export async function POST(request: Request) {
       targetLinkedInData: linkedInData,
       additionalInfo: attachedContent,
       emailCount: 5, // Generate 5 emails
+      transformedWhatWeDo,
     });
     
     // 5. Generate with Claude
@@ -116,6 +158,8 @@ export async function POST(request: Request) {
       style: style.name,
       targetCompany: targetData.companyName,
       targetFirstName,
+      transformedWhatWeDo: transformedWhatWeDo || null,
+      originalWhatWeDo: whatWeDo || null,
       metadata: {
         targetBusinessType: targetData.businessType,
         senderBusinessType: senderData.businessType,

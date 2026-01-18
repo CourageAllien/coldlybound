@@ -9,6 +9,7 @@ interface PromptBuilderInput {
   targetLinkedInData?: string;
   additionalInfo?: string;
   emailCount?: number;
+  transformedWhatWeDo?: string;
 }
 
 // High-quality reference emails for the AI to learn from
@@ -57,7 +58,7 @@ AWS improved leadership capabilities 55% in 90 days using this. Open to learning
 `;
 
 export function buildPrompt(input: PromptBuilderInput): string {
-  const { style, targetData, senderData, intent, targetFirstName, targetLinkedInData, additionalInfo, emailCount = 5 } = input;
+  const { style, targetData, senderData, intent, targetFirstName, targetLinkedInData, additionalInfo, emailCount = 5, transformedWhatWeDo } = input;
   
   // Select most relevant examples (2-3 based on context matching)
   const relevantExamples = selectRelevantExamples(
@@ -117,6 +118,13 @@ SENDER INFORMATION (the product/service being pitched):
 - Key services/products: ${senderData.keyPoints.join(', ') || 'None extracted'}
 - Business type: ${senderData.businessType}
 ${senderData.rawContent ? `\nWebsite content:\n${senderData.rawContent.slice(0, 1500)}` : ''}
+${transformedWhatWeDo ? `
+CORE VALUE PROPOSITION (USE THIS AS THE FOUNDATION):
+"${transformedWhatWeDo}"
+
+This is the specific outcome the sender delivers - use this language and framing in the emails.
+Focus on this outcome, not generic service descriptions.
+` : ''}
 
 ${senderData.caseStudies && senderData.caseStudies.length > 0 ? `
 VERIFIED CASE STUDIES (FROM SENDER'S WEBSITE - YOU MAY REFERENCE ONLY THESE):
