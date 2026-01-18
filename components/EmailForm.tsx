@@ -29,6 +29,7 @@ export default function EmailForm({ onSubmit, isLoading }: EmailFormProps) {
     if (!targetUrl.trim()) newErrors.targetUrl = 'Required';
     if (!senderUrl.trim()) newErrors.senderUrl = 'Required';
     if (!styleSlug) newErrors.style = 'Required';
+    if (!whatWeDo.trim()) newErrors.whatWeDo = 'Required';
     if (!intent.trim()) newErrors.intent = 'Required';
     if (!attachedFile) newErrors.file = 'Please attach a file';
     
@@ -145,33 +146,19 @@ export default function EmailForm({ onSubmit, isLoading }: EmailFormProps) {
       {/* What Do We Do */}
       <div style={{ marginBottom: 20 }}>
         <label style={labelStyle}>
-          What Do We Do? <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional - we&apos;ll enhance it)</span>
+          What Do We Do? <span style={{ color: 'var(--error)' }}>*</span>
         </label>
         <textarea
           value={whatWeDo}
-          onChange={(e) => setWhatWeDo(e.target.value)}
+          onChange={(e) => { setWhatWeDo(e.target.value); setErrors(p => ({...p, whatWeDo: ''})); }}
           placeholder="e.g., We do SEO, We run paid ads, We do lead generation..."
           rows={2}
-          style={{ resize: 'none' }}
+          style={{ 
+            resize: 'none',
+            ...(errors.whatWeDo ? { borderColor: 'var(--error)' } : {})
+          }}
         />
-        <div style={{ 
-          fontSize: 12, 
-          color: 'var(--text-muted)', 
-          marginTop: 8,
-          padding: '10px 12px',
-          background: 'var(--bg-base)',
-          borderRadius: 8,
-          border: '1px solid var(--border-subtle)',
-        }}>
-          <div style={{ marginBottom: 4 }}>
-            <span style={{ color: 'var(--brand)', fontWeight: 500 }}>✨ AI Transform:</span> Type what you ARE and we convert it to what you DO
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ color: 'var(--text-muted)' }}>&quot;We do SEO&quot;</span>
-            <span style={{ color: 'var(--brand)' }}>→</span>
-            <span style={{ color: 'var(--accent)' }}>&quot;We get B2B companies ranking on page 1 in 90 days&quot;</span>
-          </div>
-        </div>
+        {errors.whatWeDo && <div style={errorStyle}><AlertCircle size={12} /> {errors.whatWeDo}</div>}
       </div>
 
       {/* Intent */}
