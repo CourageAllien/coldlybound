@@ -16,9 +16,12 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
   const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    let intervalId: NodeJS.Timeout | null = null;
+    let isMounted = true;
     
     const fetchStatus = async () => {
+      if (!isMounted) return;
+      
       try {
         const response = await fetch(`/api/bulk/status?jobId=${jobId}`);
         const data = await response.json();
@@ -27,27 +30,37 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
           throw new Error(data.error || 'Failed to fetch job status');
         }
         
+        if (!isMounted) return;
+        
         setJob(data.job);
         
         // Stop polling when job is complete or failed
         if (data.job.status === 'completed' || data.job.status === 'failed' || data.job.status === 'cancelled') {
-          clearInterval(intervalId);
+          if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+          }
           if (data.job.status === 'completed') {
             onComplete();
           }
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch status');
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : 'Failed to fetch status');
+        }
       }
     };
     
     // Initial fetch
     fetchStatus();
     
-    // Poll every 2 seconds
+    // Poll every 2 seconds only if job might still be processing
     intervalId = setInterval(fetchStatus, 2000);
     
-    return () => clearInterval(intervalId);
+    return () => {
+      isMounted = false;
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [jobId, onComplete]);
 
   const handleDownload = async () => {
