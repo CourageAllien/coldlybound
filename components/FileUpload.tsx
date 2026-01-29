@@ -9,7 +9,7 @@ interface FileUploadProps {
   error?: string;
 }
 
-const ACCEPTED_FILE_TYPES = '.pdf,.doc,.docx,.ppt,.pptx,.txt,.md,.rtf';
+const ACCEPTED_FILE_TYPES = '.pdf,.doc,.docx,.ppt,.pptx,.txt,.md,.rtf,.csv';
 
 export default function FileUpload({ onFileSelect, file, error }: FileUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
@@ -176,7 +176,7 @@ export default function FileUpload({ onFileSelect, file, error }: FileUploadProp
           Click to upload or drag and drop
         </p>
         <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
-          PDF, DOC, DOCX, PPT, TXT (max 10MB)
+          PDF, DOC, DOCX, PPT, TXT, CSV (max 10MB)
         </p>
       </div>
       

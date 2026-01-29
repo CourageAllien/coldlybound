@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       const fileBuffer = await attachedFile.arrayBuffer();
       const fileName = attachedFile.name.toLowerCase();
       
-      if (fileName.endsWith('.txt') || fileName.endsWith('.md')) {
+      if (fileName.endsWith('.txt') || fileName.endsWith('.md') || fileName.endsWith('.csv')) {
         attachedContent = new TextDecoder().decode(fileBuffer);
       } else if (fileName.endsWith('.pdf')) {
         attachedContent = `[PDF Document: ${attachedFile.name}]\n` + await extractTextFromPDF(fileBuffer);
