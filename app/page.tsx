@@ -93,6 +93,7 @@ export default function Home() {
   }) => {
     setBulkIsLoading(true);
     setBulkError(null);
+    setBulkState('form'); // Reset state
     
     try {
       const formData = new FormData();
@@ -117,7 +118,13 @@ export default function Home() {
       }
       
       setBulkJobId(result.jobId);
-      setBulkState('processing');
+      
+      // If job completed synchronously, go straight to complete state
+      if (result.status === 'completed') {
+        setBulkState('complete');
+      } else {
+        setBulkState('processing');
+      }
     } catch (err) {
       setBulkError(err instanceof Error ? err.message : 'Failed to start bulk job');
     } finally {
@@ -328,7 +335,38 @@ export default function Home() {
         {/* Bulk Mode Content */}
         {mode === 'bulk' && (
           <div className="animate-fade-up">
-            {bulkState === 'processing' && bulkJobId ? (
+            {bulkIsLoading ? (
+              /* Loading state while generating */
+              <div style={{ 
+                background: 'var(--bg-elevated)', 
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 16, 
+                padding: 48,
+                textAlign: 'center'
+              }}>
+                <div style={{ 
+                  width: 64, 
+                  height: 64, 
+                  borderRadius: 16, 
+                  background: 'var(--brand-muted)', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  margin: '0 auto 20px'
+                }}>
+                  <div className="animate-spin">
+                    <Sparkles size={28} color="var(--brand)" />
+                  </div>
+                </div>
+                <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>Generating Emails...</h3>
+                <p style={{ color: 'var(--text-muted)', marginBottom: 8 }}>
+                  Researching prospects and crafting personalized emails.
+                </p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+                  This may take 20-30 seconds per prospect.
+                </p>
+              </div>
+            ) : (bulkState === 'complete' || bulkState === 'processing') && bulkJobId ? (
               <BulkProgress 
                 jobId={bulkJobId} 
                 onComplete={handleBulkComplete}
