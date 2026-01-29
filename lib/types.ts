@@ -77,3 +77,82 @@ export interface GeneratedEmail {
   targetFirstName: string;
 }
 
+// Bulk Processing Types
+export interface BulkProspect {
+  rowIndex: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  jobTitle: string;
+  companyName: string;
+  website: string;
+  linkedinUrl?: string;
+  companyLinkedinUrl?: string;
+  city?: string;
+  country?: string;
+  // Generated content (filled after processing)
+  generatedEmail1?: string;
+  generatedEmail2?: string;
+  generatedEmail3?: string;
+  // Processing metadata
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  error?: string;
+  confidence?: 'high' | 'medium' | 'low'; // Based on available data
+}
+
+export interface BulkJob {
+  id: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+  totalProspects: number;
+  processedCount: number;
+  successCount: number;
+  failedCount: number;
+  // Sender info (same for all prospects in this job)
+  senderUrl: string;
+  senderWhatWeDo: string;
+  senderIntent: string;
+  styleSlug: string;
+  attachedFileContent?: string;
+  // Timestamps
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string;
+  // Results
+  prospects: BulkProspect[];
+}
+
+export interface BulkJobSummary {
+  id: string;
+  status: BulkJob['status'];
+  totalProspects: number;
+  processedCount: number;
+  successCount: number;
+  failedCount: number;
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string;
+}
+
+// CSV Column mapping
+export const BULK_CSV_COLUMNS = {
+  required: [
+    'Target Prospect First Name',
+    'Target Prospect Last Name', 
+    'Target Prospect Email',
+    'Target Prospect Job Title',
+    'Target Prospect Company Name',
+    'Target Prospect Website',
+  ],
+  optional: [
+    'Target Prospect Linkedin URL',
+    'Target Prospect Company Linkedin URL',
+    'Target Prospect City',
+    'Target Prospect Country',
+  ],
+  output: [
+    'Target Prospect Generated Email Copy 1',
+    'Target Prospect Generated Email Copy 2',
+    'Target Prospect Generated Email Copy 3',
+  ],
+} as const;
+
