@@ -4,6 +4,14 @@ import { BulkProspect } from '@/lib/types';
 
 export async function POST(request: Request) {
   try {
+    // Check if Supabase is configured
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return NextResponse.json(
+        { error: 'Supabase environment variables not configured. Please add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.' },
+        { status: 500 }
+      );
+    }
+    
     const formData = await request.formData();
     
     const prospectsJson = formData.get('prospects') as string;
@@ -90,7 +98,7 @@ export async function POST(request: Request) {
     if (dbError) {
       console.error('Database error:', dbError);
       return NextResponse.json(
-        { error: 'Failed to create job. Please ensure database is configured.' },
+        { error: `Database error: ${dbError.message || dbError.code || 'Unknown error'}. Hint: ${dbError.hint || 'Check if bulk_jobs table exists.'}` },
         { status: 500 }
       );
     }
