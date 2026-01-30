@@ -143,6 +143,21 @@ Guidelines: ${style.guidelines.join(', ')}
     
     const prompt = `You are an expert cold email copywriter specializing in high-converting B2B outreach. Generate 8 DIFFERENT cold emails following the CEH (Cold Email Hub) framework.
 
+=== OFFER VS SERVICE (CRITICAL) ===
+NEVER write emails that just mention a service ("We do X"). ALWAYS present an OFFER:
+- SPECIFIC OUTCOME: What exactly will they get?
+- CLEAR TIMEFRAME: When will they get it?
+- MECHANISM: HOW you deliver it - this makes it believable
+- PROOF: Who else you've helped (only if verified below)
+
+THE MECHANISM IS EVERYTHING:
+❌ "We book 10 meetings a month" (no mechanism - nobody believes this)
+✅ "We book meetings by targeting companies hiring SDRs using intent signals" (believable)
+
+If you can't sell the RESULT, sell the INFORMATION (low friction, high curiosity):
+❌ "We'll get you 10 leads" (needs trust you haven't earned)
+✅ "Report on 5 things competitors are doing to steal your leads" (high curiosity)
+
 CRITICAL CEH COPY RULES (MUST FOLLOW EXACTLY):
 1. WORD COUNT: 80-100 words per email (no more, no less - count carefully!)
 2. SUBJECT LINE: 1-3 words only (short, punchy, intriguing)

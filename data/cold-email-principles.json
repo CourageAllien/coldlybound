@@ -1,0 +1,195 @@
+{
+  "version": "1.0",
+  "name": "Cold Email Offer & Copy Principles",
+  "description": "Core principles for crafting cold emails that convert, including offer structure, lead magnets, and mechanism-based selling",
+  
+  "serviceVsOffer": {
+    "description": "The critical difference between a service and an offer",
+    "examples": {
+      "bad": [
+        {"service": "We run ads", "problem": "Just a service category, not an offer"},
+        {"service": "We do SEO", "problem": "Tells them your job title, not what happens when they hire you"},
+        {"service": "We do cold email", "problem": "Service category with no outcome"},
+        {"service": "We're a web design agency", "problem": "Identity, not result"},
+        {"service": "We do lead generation", "problem": "Vague service description"}
+      ],
+      "good": [
+        {"offer": "5 qualified calls in 30 days or you don't pay", "why": "Specific outcome + timeframe + risk reversal"},
+        {"offer": "We build cold email systems that book 15-30 qualified calls per month", "why": "Specific measurable outcome"},
+        {"offer": "We redesign websites that convert 2-3x more visitors into leads", "why": "Outcome-focused with metric"},
+        {"offer": "We get B2B companies ranking on page 1 for their highest-intent keywords in 90 days", "why": "Specific outcome + timeframe"},
+        {"offer": "10 qualified + attending sales calls in 30 days like we've done for 72 other paid ad agencies or you don't pay", "why": "Full offer with all elements"}
+      ]
+    }
+  },
+
+  "coldOfferFormula": {
+    "description": "The 5-part formula that makes cold emails work",
+    "elements": [
+      {
+        "name": "Specific Outcome",
+        "description": "What exactly will they get?",
+        "examples": ["5 new clients", "10 qualified calls", "30 booked demos", "$50K in new revenue"]
+      },
+      {
+        "name": "Clear Timeframe",
+        "description": "When will they get it?",
+        "examples": ["in 30 days", "within 60 days", "in 90 days"]
+      },
+      {
+        "name": "Mechanism",
+        "description": "HOW you deliver the result - this is what makes it believable",
+        "examples": [
+          "by using Clay to target companies hiring SDRs",
+          "through our 5-touch nurture sequence",
+          "by building 20 high-authority backlinks per month"
+        ]
+      },
+      {
+        "name": "Proof",
+        "description": "Who else have you helped? Similar to them.",
+        "examples": [
+          "like we've done for 72 other paid ad agencies",
+          "helped [Similar Company] go from 0 to 30 calls/month",
+          "took an SEO agency from 100% referrals to 12 calls/week"
+        ]
+      },
+      {
+        "name": "Risk Reversal",
+        "description": "What happens if it doesn't work?",
+        "examples": ["or you don't pay", "or we work for free until we hit it", "money-back guarantee"]
+      }
+    ]
+  },
+
+  "mechanismPrinciple": {
+    "description": "Cold traffic does NOT believe the result until they understand the METHOD",
+    "rule": "Always share HOW you do it, not just WHAT you deliver",
+    "examples": {
+      "bad": [
+        "We book 10 meetings a month",
+        "We get you leads",
+        "We improve your SEO",
+        "We help you scale with AI"
+      ],
+      "good": [
+        "We book meetings by using Clay to target companies hiring SDRs",
+        "We build a custom lead magnet, drive traffic through cold email, and nurture replies through a 5-touch sequence",
+        "We run a full technical audit, fix your site structure, then build 20 high-authority backlinks per month",
+        "Our AI agent calls 100 leads daily and transfers the live answers to your reps"
+      ]
+    }
+  },
+
+  "frontEndVsBackEnd": {
+    "description": "Two types of offers for different stages of trust",
+    "frontEnd": {
+      "purpose": "Get the call - designed for cold traffic who don't trust you yet",
+      "characteristics": ["Low friction", "High curiosity", "Sells the mechanism or information"],
+      "examples": [
+        "We'll show you exactly how to find companies not running ads right now but who have budget plus we'll give you a 1K list when you book a 30-min walkthrough",
+        "Report on 5 things competitors are doing to steal your leads",
+        "See your competitors' live ads + their estimated spend"
+      ]
+    },
+    "backEnd": {
+      "purpose": "Close the sale - where you make the real money",
+      "characteristics": ["Requires trust", "Higher commitment", "Full service delivery"],
+      "examples": [
+        "We'll book you 10 qualified calls per month for $3K/month",
+        "Full done-for-you lead generation at $5K/month"
+      ]
+    },
+    "strategy": "Front-end offers get the call. Back-end offers close the sale on the call."
+  },
+
+  "leadMagnets": {
+    "description": "What makes lead magnets actually convert",
+    "bad": [
+      {"type": "PDF guide on [topic]", "problem": "Nobody reads PDFs"},
+      {"type": "10 Tips to Sell Your Home", "problem": "Generic, low value"},
+      {"type": "Guide to Reducing Churn", "problem": "Boring, requires effort"},
+      {"type": "How We Run Ads", "problem": "About you, not them"}
+    ],
+    "good": [
+      {"type": "Live tool that shows you [their problem]", "why": "Interactive, immediate value"},
+      {"type": "See what homes in your neighborhood sold for this month", "why": "Specific to them"},
+      {"type": "Calculate how much churn is costing you right now", "why": "Personalized insight"},
+      {"type": "See your competitors' live ads + their estimated spend", "why": "Competitive intelligence"},
+      {"type": "Benchmark your offer: Is your salary competitive?", "why": "Self-assessment"}
+    ],
+    "byIndustry": {
+      "realEstate": {"bad": "10 Tips to Sell Your Home", "good": "See what homes in your neighborhood sold for this month"},
+      "saas": {"bad": "Guide to Reducing Churn", "good": "Calculate how much churn is costing you right now"},
+      "marketingAgency": {"bad": "How We Run Ads", "good": "See your competitors' live ads + their estimated spend"},
+      "coaches": {"bad": "My 5-Step Framework", "good": "Score yourself: Are you ready for [outcome]?"},
+      "ecommerce": {"bad": "Holiday Marketing Playbook", "good": "See what your competitors are emailing right now"},
+      "recruiters": {"bad": "Hiring Best Practices", "good": "Benchmark your offer: Is your salary competitive?"}
+    }
+  },
+
+  "sixQuestionFramework": {
+    "description": "Answer these before writing any cold email",
+    "questions": [
+      {
+        "question": "What do we do?",
+        "bad": "Service category like 'We do SEO'",
+        "good": "Specific outcome like 'We get B2B companies ranking on page 1 in 90 days'",
+        "template": "We [specific action] that [specific measurable outcome]"
+      },
+      {
+        "question": "Who is it for?",
+        "bad": "Vague like 'B2B companies' or 'business owners'",
+        "good": "Specific like 'Marketing agencies doing 50-200K/month who want to add outbound'",
+        "template": "We work with [specific type] who [specific situation/pain]"
+      },
+      {
+        "question": "How do we do it?",
+        "bad": "Just the result like 'We get you leads'",
+        "good": "The mechanism like 'Custom targeting + personalized sequences + done-for-you management'",
+        "template": "The way we do this is [step 1], then [step 2], then [step 3]"
+      },
+      {
+        "question": "What problems do we solve?",
+        "bad": "Your service description",
+        "good": "Their actual pain in their words - pipeline inconsistency, relying on referrals, tried outbound and failed",
+        "template": "List 3-5 problems your ideal client actually complains about"
+      },
+      {
+        "question": "Who else have we helped?",
+        "bad": "Vague like 'We've worked with 50+ companies'",
+        "good": "Specific like 'Helped [Similar Company] go from 0 to 30 calls/month in 60 days'",
+        "template": "Include who they were, where they started, what happened, how fast"
+      },
+      {
+        "question": "What's the ROI/benefit?",
+        "bad": "Vague like 'You'll grow your business'",
+        "good": "Specific like 'You won't have to rely on just inbound or referrals again'",
+        "template": "If you pay us [X], you'll get [Y], which means [Z return]"
+      }
+    ]
+  },
+
+  "coldTrafficReality": {
+    "description": "Understanding why cold prospects don't respond",
+    "facts": [
+      "A cold prospect has no relationship with you",
+      "A cold prospect has no belief you can help",
+      "A cold prospect has no evidence you've helped others",
+      "A cold prospect has no understanding of your process"
+    ],
+    "solution": "Your email has to address these points through mechanism, proof, and low-friction offers"
+  },
+
+  "twoTypesOfOffers": {
+    "result": {
+      "example": "We'll get you 10 leads",
+      "characteristics": ["Risky for you to guarantee", "Requires trust", "Better for warm traffic"]
+    },
+    "information": {
+      "example": "Report on 5 things competitors are doing to steal your leads",
+      "characteristics": ["Low risk", "High curiosity", "Great for cold traffic"]
+    },
+    "rule": "If you can't sell the result, sell the information"
+  }
+}

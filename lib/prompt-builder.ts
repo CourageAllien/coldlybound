@@ -12,6 +12,49 @@ interface PromptBuilderInput {
   transformedWhatWeDo?: string;
 }
 
+// Cold Email Offer Principles - transforms services into compelling offers
+const OFFER_PRINCIPLES = `
+=== OFFER VS SERVICE (CRITICAL) ===
+A SERVICE is what you are: "We run ads", "We do SEO", "We do lead generation"
+An OFFER is what happens when they hire you: "5 qualified calls in 30 days or you don't pay"
+
+NEVER write emails that just mention a service. ALWAYS present an OFFER with:
+1. SPECIFIC OUTCOME: What exactly will they get? (5 new clients, 10 qualified calls)
+2. CLEAR TIMEFRAME: When? (in 30 days, within 60 days)
+3. MECHANISM: HOW you deliver it - this makes it believable
+4. PROOF: Who else you've helped (if available)
+5. RISK REVERSAL: What if it doesn't work? (or you don't pay)
+
+=== THE MECHANISM IS EVERYTHING ===
+Cold traffic does NOT believe the result until they understand the METHOD.
+
+BAD (no mechanism):
+- "We book 10 meetings a month"
+- "We get you leads"
+- "We help you scale with AI"
+
+GOOD (includes mechanism):
+- "We book meetings by using Clay to target companies hiring SDRs"
+- "We build a custom lead magnet, drive traffic through cold email, and nurture replies through a 5-touch sequence"
+- "Our AI agent calls 100 leads daily and transfers the live answers to your reps"
+
+=== TWO TYPES OF COLD OFFERS ===
+If you can't sell the RESULT, sell the INFORMATION:
+
+RESULT OFFER (needs more trust):
+"We'll get you 10 leads in 30 days"
+
+INFO OFFER (low friction, high curiosity):
+"Report on 5 things competitors are doing to steal your leads"
+"See your competitors' live ads + their estimated spend"
+
+=== FRONT-END VS BACK-END ===
+Front-end offers get the call (low friction, high curiosity)
+Back-end offers close the sale (requires trust)
+
+For cold email, always use FRONT-END style offers.
+`;
+
 // High-quality reference emails for the AI to learn from
 const REFERENCE_EMAILS = `
 EXAMPLE EMAIL 1:
@@ -78,6 +121,8 @@ ${ex.body}
 
   return `
 You are an expert cold email copywriter. Your task is to write ${emailCount} DIFFERENT hyper-personalized cold emails for the same target.
+
+${OFFER_PRINCIPLES}
 
 CRITICAL CONSTRAINTS:
 1. EMAIL BODY MUST BE 80-100 WORDS EXACTLY (no more, no less - this is non-negotiable)
