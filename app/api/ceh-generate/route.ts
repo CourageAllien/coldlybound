@@ -144,12 +144,18 @@ Guidelines: ${style.guidelines.join(', ')}
     const prompt = `You are an expert cold email copywriter specializing in high-converting B2B outreach. Generate 8 DIFFERENT cold emails following the CEH (Cold Email Hub) framework.
 
 CRITICAL CEH COPY RULES (MUST FOLLOW EXACTLY):
-1. FIRST LINE: Maximum 12 words - punchy, personalized opener
-2. SUBJECT LINE: Maximum 3 words + {{companyName}} - e.g., "quick question {{companyName}}" or "idea for {{companyName}}"
-3. BODY: 3-4 sentences maximum (not counting first line or bullet points)
-4. CTA: Must end with "Open to learning more?" (or very similar soft ask)
-5. TOTAL WORD COUNT: Under 80 words per email
+1. WORD COUNT: 80-100 words per email (no more, no less - count carefully!)
+2. SUBJECT LINE: 1-3 words only (short, punchy, intriguing)
+3. FIRST LINE: Personalization - reference something specific about them
+4. STRUCTURE: Call out a challenge they face, then offer a perspective on "a better way"
+5. CTA: Interest-based, low friction (e.g., "Open to learning more?" - don't ask for time!)
 6. AVOID GENERIC COPY: If it sounds generic to you, it will sound generic to the prospect
+
+STYLE RULES:
+- Minimize "I, we, our" language - focus on THEM
+- Zero marketing jargon - write the way you speak
+- Professional but not overly formal
+- Plenty of white space (no big chunks of text)
 
 PRIMARY PAIN POINT TO ADDRESS:
 ${painPointText}
@@ -201,30 +207,30 @@ DIFFERENTIATION CHECK:
 - Be specific to their industry when possible
 
 NOW GENERATE 8 DIFFERENT EMAILS:
+Each email MUST be 80-100 words (count carefully - no exceptions).
 Each email should have a unique angle while following all CEH rules.
-Replace {{companyName}} with the actual company name in subject lines.
 
 Format each email EXACTLY like this:
 
 EMAIL 1:
-SUBJECT: [3 words max + company name]
+SUBJECT: [1-3 words, lowercase]
 BODY:
-[First line - max 12 words]
+[Personalized first line about them]
 
-[2-3 more sentences - body of email]
+[Call out their challenge, offer a better way - 2-3 sentences]
 
 Open to learning more?
 
 EMAIL 2:
-SUBJECT: [3 words max + company name]
+SUBJECT: [1-3 words, lowercase]
 BODY:
-[First line - max 12 words]
+[Personalized first line about them]
 
-[2-3 more sentences - body of email]
+[Call out their challenge, offer a better way - 2-3 sentences]
 
 Open to learning more?
 
-(Continue for all 8 emails with different angles/hooks)
+(Continue for all 8 emails with different angles/hooks - each 80-100 words)
 `;
 
     const response = await anthropic.messages.create({

@@ -38,6 +38,7 @@ export default function Home() {
   // Bulk mode state
   const [bulkState, setBulkState] = useState<BulkState>('form');
   const [bulkJobId, setBulkJobId] = useState<string | null>(null);
+  const [bulkTotalProspects, setBulkTotalProspects] = useState(0);
   const [bulkIsLoading, setBulkIsLoading] = useState(false);
   const [bulkError, setBulkError] = useState<string | null>(null);
 
@@ -118,13 +119,10 @@ export default function Home() {
       }
       
       setBulkJobId(result.jobId);
+      setBulkTotalProspects(data.prospects.length);
       
-      // If job completed synchronously, go straight to complete state
-      if (result.status === 'completed') {
-        setBulkState('complete');
-      } else {
-        setBulkState('processing');
-      }
+      // Job is always pending initially, processing happens in chunks
+      setBulkState('processing');
     } catch (err) {
       setBulkError(err instanceof Error ? err.message : 'Failed to start bulk job');
     } finally {
@@ -139,6 +137,7 @@ export default function Home() {
   const handleBulkReset = () => {
     setBulkState('form');
     setBulkJobId(null);
+    setBulkTotalProspects(0);
     setBulkError(null);
   };
   
@@ -257,7 +256,7 @@ export default function Home() {
             }}
           >
             <Users size={16} />
-            Bulk Upload (up to 5K)
+            Bulk Upload (up to 1K)
           </button>
         </div>
 
@@ -368,7 +367,8 @@ export default function Home() {
               </div>
             ) : (bulkState === 'complete' || bulkState === 'processing') && bulkJobId ? (
               <BulkProgress 
-                jobId={bulkJobId} 
+                jobId={bulkJobId}
+                initialTotal={bulkTotalProspects}
                 onComplete={handleBulkComplete}
                 onNewJob={handleBulkReset}
               />
@@ -415,7 +415,7 @@ export default function Home() {
                   fontSize: 14
                 }}>
                   <Users size={16} />
-                  Upload a CSV with up to 5,000 prospects · 3 emails per prospect
+                  Upload a CSV with up to 1,000 prospects · 3 emails per prospect
                 </div>
                 <BulkUploadForm onSubmit={handleBulkSubmit} isLoading={bulkIsLoading} />
               </div>

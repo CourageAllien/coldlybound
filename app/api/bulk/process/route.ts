@@ -2,15 +2,18 @@ import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { supabase } from '@/lib/supabase';
 import { scrapeWebsite } from '@/lib/scraper';
-import { getStyleBySlug } from '@/lib/styles';
 import { BulkProspect, ScrapedData } from '@/lib/types';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// Process in batches to avoid timeouts
-const BATCH_SIZE = 5;
+// Process 10 prospects per chunk to stay within timeout limits
+// With parallel processing, this takes ~5-10 seconds per chunk
+const CHUNK_SIZE = 10;
+
+// Process prospects in parallel batches of 5 for speed
+const PARALLEL_BATCH_SIZE = 5;
 
 export async function POST(request: Request) {
   try {
@@ -31,24 +34,41 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Job not found' }, { status: 404 });
     }
     
-    // Check if already processing or completed
+    // Check if already completed or cancelled
     if (job.status === 'completed' || job.status === 'cancelled') {
-      return NextResponse.json({ message: 'Job already completed' });
+      return NextResponse.json({ 
+        message: 'Job already completed',
+        status: job.status,
+        processedCount: job.processed_count,
+        successCount: job.success_count,
+        failedCount: job.failed_count,
+        totalProspects: job.total_prospects,
+        remainingCount: 0,
+        isComplete: true,
+      });
     }
-    
-    // Update status to processing
-    await supabase
-      .from('bulk_jobs')
-      .update({ status: 'processing', updated_at: new Date().toISOString() })
-      .eq('id', jobId);
     
     // Parse prospects
     let prospects: BulkProspect[] = [];
     try {
-      prospects = typeof job.prospects_data === 'string' 
-        ? JSON.parse(job.prospects_data) 
-        : job.prospects_data;
-    } catch {
+      const rawData = job.prospects_data;
+      prospects = typeof rawData === 'string' 
+        ? JSON.parse(rawData) 
+        : rawData;
+      
+      // Ensure prospects is an array
+      if (!Array.isArray(prospects)) {
+        throw new Error('Prospects data is not an array');
+      }
+      
+      // Ensure all prospects have a status - default to 'pending' if missing
+      prospects = prospects.map(p => ({
+        ...p,
+        status: p.status || 'pending',
+      }));
+      
+    } catch (parseError) {
+      console.error('Error parsing prospects:', parseError);
       await supabase
         .from('bulk_jobs')
         .update({ status: 'failed', updated_at: new Date().toISOString() })
@@ -56,78 +76,105 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid prospects data' }, { status: 500 });
     }
     
-    // Get style
-    const style = await getStyleBySlug(job.style_slug);
-    if (!style) {
+    console.log(`Job ${jobId}: Total prospects: ${prospects.length}, Pending: ${prospects.filter(p => p.status === 'pending').length}, Expected: ${job.total_prospects}`);
+    
+    // Verify we have all prospects (sanity check against data truncation)
+    if (prospects.length !== job.total_prospects) {
+      console.error(`Job ${jobId}: Prospect count mismatch! Got ${prospects.length}, expected ${job.total_prospects}`);
+    }
+    
+    // Parse pre-processed sender data from metadata stored in sender_what_we_do
+    let senderData: ScrapedData;
+    let transformedWhatWeDo: string;
+    
+    try {
+      // Try to parse metadata from sender_what_we_do (new format)
+      const metadata = typeof job.sender_what_we_do === 'string'
+        ? JSON.parse(job.sender_what_we_do)
+        : job.sender_what_we_do;
+      
+      if (metadata && metadata.senderData) {
+        senderData = metadata.senderData;
+        transformedWhatWeDo = metadata.transformedWhatWeDo || job.sender_intent;
+      } else {
+        throw new Error('No metadata found');
+      }
+    } catch {
+      // Fallback - scrape sender website if metadata not found (legacy jobs)
+      console.log('No cached sender data, scraping...');
+      try {
+        senderData = await scrapeWebsite(job.sender_url);
+      } catch {
+        senderData = {
+          url: job.sender_url,
+          companyName: 'Company',
+          description: 'No description available',
+          keyPoints: [],
+          businessType: 'b2b company',
+          caseStudies: [],
+          testimonials: [],
+        };
+      }
+      transformedWhatWeDo = job.sender_intent;
+    }
+    
+    // Get style info for prompt
+    const styleInfo = {
+      name: job.style_slug,
+      promptTemplate: '',
+      guidelines: [],
+    };
+    
+    // Update status to processing
+    if (job.status === 'pending') {
       await supabase
         .from('bulk_jobs')
-        .update({ status: 'failed', updated_at: new Date().toISOString() })
+        .update({ status: 'processing', updated_at: new Date().toISOString() })
         .eq('id', jobId);
-      return NextResponse.json({ error: 'Style not found' }, { status: 500 });
     }
-    
-    // Scrape sender website once (same for all prospects)
-    let senderData: ScrapedData;
-    try {
-      senderData = await scrapeWebsite(job.sender_url);
-    } catch {
-      senderData = {
-        url: job.sender_url,
-        companyName: 'Company',
-        description: 'No description available',
-        keyPoints: [],
-        businessType: 'b2b company',
-        caseStudies: [],
-        testimonials: [],
-      };
-    }
-    
-    // Transform "What We Do" once
-    let transformedWhatWeDo = job.sender_what_we_do;
-    try {
-      const transformResponse = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 300,
-        messages: [{
-          role: 'user',
-          content: `Transform this generic service description into a specific, outcome-focused value proposition.
-
-INPUT: "${job.sender_what_we_do}"
-
-RULES:
-- Convert what they ARE into what they DO (specific outcomes)
-- Include measurable results, timeframes, or specific benefits
-- Keep it to 1-2 sentences max
-- Make it compelling and specific
-
-OUTPUT only the transformed statement, nothing else:`
-        }]
-      });
-      
-      const content = transformResponse.content.find(block => block.type === 'text');
-      if (content && content.type === 'text') {
-        transformedWhatWeDo = content.text.trim().replace(/^["']|["']$/g, '');
-      }
-    } catch (e) {
-      console.log('Transform failed, using original:', e);
-    }
-    
-    // Process prospects in batches
-    let processedCount = job.processed_count || 0;
-    let successCount = job.success_count || 0;
-    let failedCount = job.failed_count || 0;
     
     // Find unprocessed prospects
     const unprocessedProspects = prospects.filter(p => p.status === 'pending');
     
-    for (let i = 0; i < unprocessedProspects.length; i += BATCH_SIZE) {
-      const batch = unprocessedProspects.slice(i, i + BATCH_SIZE);
+    // If no more to process, mark as complete
+    if (unprocessedProspects.length === 0) {
+      await supabase
+        .from('bulk_jobs')
+        .update({
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', jobId);
+      
+      return NextResponse.json({
+        message: 'Processing complete',
+        status: 'completed',
+        processedCount: job.processed_count || prospects.length,
+        successCount: job.success_count || prospects.filter(p => p.status === 'completed').length,
+        failedCount: job.failed_count || prospects.filter(p => p.status === 'failed').length,
+        totalProspects: prospects.length,
+        remainingCount: 0,
+        isComplete: true,
+      });
+    }
+    
+    // Take a chunk to process
+    const chunkToProcess = unprocessedProspects.slice(0, CHUNK_SIZE);
+    
+    let processedCount = job.processed_count || 0;
+    let successCount = job.success_count || 0;
+    let failedCount = job.failed_count || 0;
+    
+    // Process in parallel batches
+    for (let i = 0; i < chunkToProcess.length; i += PARALLEL_BATCH_SIZE) {
+      const batch = chunkToProcess.slice(i, i + PARALLEL_BATCH_SIZE);
       
       // Process batch in parallel
       const batchResults = await Promise.allSettled(
         batch.map(prospect => processProspect(
           prospect, 
-          style, 
+          styleInfo, 
           senderData, 
           transformedWhatWeDo, 
           job.sender_intent,
@@ -160,35 +207,41 @@ OUTPUT only the transformed statement, nothing else:`
         }
         processedCount++;
       });
-      
-      // Update job in database after each batch
-      await supabase
-        .from('bulk_jobs')
-        .update({
-          processed_count: processedCount,
-          success_count: successCount,
-          failed_count: failedCount,
-          prospects_data: JSON.stringify(prospects),
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', jobId);
     }
     
-    // Mark job as completed
-    await supabase
+    // Check if all prospects are now processed
+    const remainingUnprocessed = prospects.filter(p => p.status === 'pending').length;
+    const isComplete = remainingUnprocessed === 0;
+    
+    console.log(`Job ${jobId}: After processing chunk - Processed: ${processedCount}, Remaining: ${remainingUnprocessed}, IsComplete: ${isComplete}`);
+    
+    // Update job in database
+    const { error: updateError } = await supabase
       .from('bulk_jobs')
       .update({
-        status: 'completed',
-        completed_at: new Date().toISOString(),
+        status: isComplete ? 'completed' : 'processing',
+        processed_count: processedCount,
+        success_count: successCount,
+        failed_count: failedCount,
+        prospects_data: JSON.stringify(prospects),
         updated_at: new Date().toISOString(),
+        ...(isComplete ? { completed_at: new Date().toISOString() } : {}),
       })
       .eq('id', jobId);
     
+    if (updateError) {
+      console.error('Error updating job:', updateError);
+    }
+    
     return NextResponse.json({
-      message: 'Processing complete',
+      message: isComplete ? 'Processing complete' : 'Chunk processed',
+      status: isComplete ? 'completed' : 'processing',
       processedCount,
       successCount,
       failedCount,
+      totalProspects: prospects.length,
+      remainingCount: remainingUnprocessed,
+      isComplete,
     });
     
   } catch (error) {
@@ -225,7 +278,7 @@ async function processProspect(
       };
     }
     
-    // Build prompt for 3 emails
+    // Build prompt for 3 emails with 80-100 word rule
     const prompt = buildBulkPrompt({
       prospect,
       targetData,
@@ -278,17 +331,21 @@ function buildBulkPrompt(input: {
 You are an expert cold email copywriter. Write 3 DIFFERENT hyper-personalized cold emails.
 
 CRITICAL CONSTRAINTS:
-1. EMAIL BODY MUST BE UNDER 100 WORDS (non-negotiable)
-2. SUBJECT LINE: 1-4 words only, lowercase, no punctuation
-3. Use the target's first name naturally
-4. Reference specific details from their website/company
+1. EMAIL BODY MUST BE 80-100 WORDS EXACTLY (no more, no less - count carefully!)
+2. SUBJECT LINE: 1-3 words only, lowercase, no punctuation
+3. Personalization in the FIRST LINE - reference something specific about them
+4. Call out a challenge they face, then offer a perspective on "a better way"
 5. Each email should have a DIFFERENT angle/hook
+6. Interest-based, low friction CTA (e.g., "Open to learning more?" - don't ask for time!)
+
+STYLE RULES:
+- Minimize "I, we, our" language - focus on THEM
+- Zero marketing jargon - write the way you speak
+- Professional but not overly formal
+- Plenty of white space (no big chunks of text)
 
 STYLE: ${style.name}
 ${style.promptTemplate}
-
-STYLE GUIDELINES:
-${style.guidelines.map(g => `- ${g}`).join('\n')}
 
 TARGET PROSPECT:
 - First Name: ${prospect.firstName}
@@ -317,22 +374,22 @@ ${additionalInfo ? `\nAdditional context:\n${additionalInfo.slice(0, 1000)}` : '
 
 CRITICAL: If no case studies provided, DO NOT invent any. Focus on value proposition instead.
 
-Generate 3 emails in this EXACT format:
+Generate 3 emails in this EXACT format (each 80-100 words):
 
 EMAIL 1:
-SUBJECT: [1-4 word subject]
+SUBJECT: [1-3 word subject, lowercase]
 BODY:
-[Full email body - under 100 words]
+[80-100 words - personalized first line, challenge + better way, soft CTA]
 
 EMAIL 2:
-SUBJECT: [1-4 word subject]
+SUBJECT: [1-3 word subject, lowercase]
 BODY:
-[Full email body - under 100 words]
+[80-100 words - personalized first line, challenge + better way, soft CTA]
 
 EMAIL 3:
-SUBJECT: [1-4 word subject]
+SUBJECT: [1-3 word subject, lowercase]
 BODY:
-[Full email body - under 100 words]
+[80-100 words - personalized first line, challenge + better way, soft CTA]
 `.trim();
 }
 
@@ -350,8 +407,8 @@ function parseThreeEmails(response: string): string[] {
     subject = subject.replace(/^["']|["']$/g, '').toLowerCase();
     
     const subjectWords = subject.split(/\s+/);
-    if (subjectWords.length > 4) {
-      subject = subjectWords.slice(0, 4).join(' ');
+    if (subjectWords.length > 3) {
+      subject = subjectWords.slice(0, 3).join(' ');
     }
     
     let body = bodyMatch ? bodyMatch[1].trim() : '';

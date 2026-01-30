@@ -1,65 +1,98 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Loader2, CheckCircle, XCircle, Download, RefreshCw, AlertTriangle, FileDown } from 'lucide-react';
-import { BulkJobSummary } from '@/lib/types';
+import { useState, useEffect, useRef } from 'react';
+import { Loader2, CheckCircle, XCircle, RefreshCw, Clock, FileDown } from 'lucide-react';
 
 interface BulkProgressProps {
   jobId: string;
+  initialTotal: number;
   onComplete: () => void;
   onNewJob: () => void;
 }
 
-export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgressProps) {
-  const [job, setJob] = useState<BulkJobSummary | null>(null);
+// Estimate ~4 seconds per prospect
+const SECONDS_PER_PROSPECT = 4;
+
+export default function BulkProgress({ jobId, initialTotal, onComplete, onNewJob }: BulkProgressProps) {
+  const [processedCount, setProcessedCount] = useState(0);
+  const [successCount, setSuccessCount] = useState(0);
+  const [failedCount, setFailedCount] = useState(0);
+  const [totalProspects, setTotalProspects] = useState(initialTotal);
+  const [isComplete, setIsComplete] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  
+  const mountedRef = useRef(true);
+  const isProcessingRef = useRef(false);
 
+  // Process chunks until complete
   useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null;
-    let isMounted = true;
+    mountedRef.current = true;
     
-    const fetchStatus = async () => {
-      if (!isMounted) return;
+    const processNextChunk = async () => {
+      // Prevent overlapping calls
+      if (isProcessingRef.current || !mountedRef.current) return;
+      isProcessingRef.current = true;
       
       try {
-        const response = await fetch(`/api/bulk/status?jobId=${jobId}`);
+        console.log('Triggering process chunk...');
+        
+        const response = await fetch('/api/bulk/process', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobId }),
+        });
+        
+        if (!mountedRef.current) return;
+        
         const data = await response.json();
+        console.log('Process response:', data);
         
         if (!response.ok) {
-          throw new Error(data.error || 'Failed to fetch job status');
+          throw new Error(data.error || 'Processing failed');
         }
         
-        if (!isMounted) return;
-        
-        setJob(data.job);
-        
-        // Stop polling when job is complete or failed
-        if (data.job.status === 'completed' || data.job.status === 'failed' || data.job.status === 'cancelled') {
-          if (intervalId) {
-            clearInterval(intervalId);
-            intervalId = null;
-          }
-          if (data.job.status === 'completed') {
-            onComplete();
-          }
+        // Update counts
+        setProcessedCount(data.processedCount || 0);
+        setSuccessCount(data.successCount || 0);
+        setFailedCount(data.failedCount || 0);
+        if (data.totalProspects) {
+          setTotalProspects(data.totalProspects);
         }
+        
+        // Check if complete
+        if (data.isComplete || data.status === 'completed') {
+          console.log('Processing complete!');
+          setIsComplete(true);
+          onComplete();
+        } else {
+          // Continue processing - schedule next chunk
+          console.log(`Processed chunk. Remaining: ${data.remainingCount}. Scheduling next...`);
+          isProcessingRef.current = false;
+          
+          // Small delay then process next chunk
+          setTimeout(() => {
+            if (mountedRef.current) {
+              processNextChunk();
+            }
+          }, 200);
+        }
+        
       } catch (err) {
-        if (isMounted) {
-          setError(err instanceof Error ? err.message : 'Failed to fetch status');
+        console.error('Processing error:', err);
+        if (mountedRef.current) {
+          setError(err instanceof Error ? err.message : 'Processing failed');
         }
+      } finally {
+        isProcessingRef.current = false;
       }
     };
     
-    // Initial fetch
-    fetchStatus();
-    
-    // Poll every 2 seconds only if job might still be processing
-    intervalId = setInterval(fetchStatus, 2000);
+    // Start processing
+    processNextChunk();
     
     return () => {
-      isMounted = false;
-      if (intervalId) clearInterval(intervalId);
+      mountedRef.current = false;
     };
   }, [jobId, onComplete]);
 
@@ -119,28 +152,13 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
     );
   }
 
-  if (!job) {
-    return (
-      <div style={{ 
-        background: 'var(--bg-elevated)', 
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 16, 
-        padding: 48,
-        textAlign: 'center'
-      }}>
-        <Loader2 size={32} className="animate-spin" style={{ margin: '0 auto 16px', color: 'var(--brand)' }} />
-        <p style={{ color: 'var(--text-muted)' }}>Loading job status...</p>
-      </div>
-    );
-  }
-
-  const progress = job.totalProspects > 0 
-    ? Math.round((job.processedCount / job.totalProspects) * 100) 
+  const progress = totalProspects > 0 
+    ? Math.round((processedCount / totalProspects) * 100) 
     : 0;
 
-  const isComplete = job.status === 'completed';
-  const isFailed = job.status === 'failed';
-  const isProcessing = job.status === 'processing' || job.status === 'pending';
+  const totalEmails = successCount * 3;
+  const remainingProspects = totalProspects - processedCount;
+  const estimatedSecondsRemaining = remainingProspects * SECONDS_PER_PROSPECT;
 
   return (
     <div style={{ 
@@ -167,26 +185,7 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
             </div>
             <h2 style={{ fontSize: 24, fontWeight: 600, marginBottom: 8 }}>Generation Complete!</h2>
             <p style={{ color: 'var(--text-secondary)' }}>
-              {job.successCount * 3} emails generated for {job.successCount} prospects
-            </p>
-          </>
-        ) : isFailed ? (
-          <>
-            <div style={{ 
-              width: 64, 
-              height: 64, 
-              borderRadius: 16, 
-              background: 'rgba(255, 90, 90, 0.1)', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              margin: '0 auto 16px'
-            }}>
-              <XCircle size={32} color="var(--error)" />
-            </div>
-            <h2 style={{ fontSize: 24, fontWeight: 600, marginBottom: 8 }}>Generation Failed</h2>
-            <p style={{ color: 'var(--text-muted)' }}>
-              Something went wrong during processing
+              {totalEmails} emails generated for {successCount} prospects
             </p>
           </>
         ) : (
@@ -194,7 +193,7 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
             <Loader2 size={40} className="animate-spin" style={{ margin: '0 auto 16px', color: 'var(--brand)' }} />
             <h2 style={{ fontSize: 24, fontWeight: 600, marginBottom: 8 }}>Generating Emails...</h2>
             <p style={{ color: 'var(--text-secondary)' }}>
-              Processing {job.totalProspects} prospects × 3 emails each
+              Processing {totalProspects} prospects × 3 emails each = {totalProspects * 3} emails
             </p>
           </>
         )}
@@ -203,13 +202,15 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
       {/* Progress Bar */}
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-          <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>Progress</span>
+          <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
+            {processedCount} of {totalProspects} prospects
+          </span>
           <span style={{ fontSize: 14, fontWeight: 600 }}>{progress}%</span>
         </div>
         <div style={{ 
-          height: 8, 
+          height: 12, 
           background: 'var(--bg-base)', 
-          borderRadius: 4, 
+          borderRadius: 6, 
           overflow: 'hidden' 
         }}>
           <div style={{ 
@@ -217,11 +218,9 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
             width: `${progress}%`, 
             background: isComplete 
               ? 'var(--accent)' 
-              : isFailed 
-                ? 'var(--error)' 
-                : 'linear-gradient(90deg, var(--brand), var(--brand-light))',
-            borderRadius: 4,
-            transition: 'width 0.5s ease'
+              : 'linear-gradient(90deg, var(--brand), var(--brand-light))',
+            borderRadius: 6,
+            transition: 'width 0.3s ease'
           }} />
         </div>
       </div>
@@ -240,7 +239,7 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
           textAlign: 'center' 
         }}>
           <p style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>
-            {job.processedCount}
+            {processedCount}
           </p>
           <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Processed</p>
         </div>
@@ -251,7 +250,7 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
           textAlign: 'center' 
         }}>
           <p style={{ fontSize: 24, fontWeight: 700, color: 'var(--accent)' }}>
-            {job.successCount}
+            {successCount}
           </p>
           <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Successful</p>
         </div>
@@ -261,15 +260,15 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
           padding: 16, 
           textAlign: 'center' 
         }}>
-          <p style={{ fontSize: 24, fontWeight: 700, color: job.failedCount > 0 ? 'var(--error)' : 'var(--text-primary)' }}>
-            {job.failedCount}
+          <p style={{ fontSize: 24, fontWeight: 700, color: failedCount > 0 ? 'var(--error)' : 'var(--text-primary)' }}>
+            {failedCount}
           </p>
           <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Failed</p>
         </div>
       </div>
 
-      {/* Estimated Time */}
-      {isProcessing && job.processedCount > 0 && (
+      {/* Estimated Time - only show when not complete */}
+      {!isComplete && remainingProspects > 0 && (
         <div style={{ 
           background: 'var(--bg-base)', 
           borderRadius: 12, 
@@ -279,19 +278,20 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
           alignItems: 'center',
           gap: 12
         }}>
-          <AlertTriangle size={18} color="var(--warning)" />
-          <div>
-            <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
-              Estimated time remaining: ~{estimateTimeRemaining(job.processedCount, job.totalProspects)}
+          <Clock size={18} color="var(--brand)" />
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 4 }}>
+              <strong>~{formatTimeRemaining(estimatedSecondsRemaining)}</strong> remaining
             </p>
             <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              You can leave this page. Progress will continue in the background.
+              {remainingProspects} prospects left • Processing in batches of 10
             </p>
           </div>
+          <Loader2 size={16} className="animate-spin" color="var(--brand)" />
         </div>
       )}
 
-      {/* Actions */}
+      {/* Actions - Download only visible when complete */}
       <div style={{ display: 'flex', gap: 12 }}>
         {isComplete && (
           <button 
@@ -308,7 +308,7 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
             ) : (
               <>
                 <FileDown size={18} />
-                Download CSV
+                Download CSV ({totalEmails} emails)
               </>
             )}
           </button>
@@ -316,27 +316,22 @@ export default function BulkProgress({ jobId, onComplete, onNewJob }: BulkProgre
         
         <button onClick={onNewJob} className="btn-secondary" style={{ flex: isComplete ? 0 : 1 }}>
           <RefreshCw size={16} />
-          {isComplete ? 'New Job' : 'Cancel & Start New'}
+          {isComplete ? 'New Job' : 'Cancel'}
         </button>
       </div>
     </div>
   );
 }
 
-function estimateTimeRemaining(processed: number, total: number): string {
-  // Assume ~3 seconds per prospect (website scrape + Claude call)
-  const remaining = total - processed;
-  const secondsPerProspect = 3;
-  const totalSeconds = remaining * secondsPerProspect;
-  
-  if (totalSeconds < 60) {
+function formatTimeRemaining(seconds: number): string {
+  if (seconds < 60) {
     return 'less than a minute';
-  } else if (totalSeconds < 3600) {
-    const minutes = Math.ceil(totalSeconds / 60);
+  } else if (seconds < 3600) {
+    const minutes = Math.ceil(seconds / 60);
     return `${minutes} minute${minutes > 1 ? 's' : ''}`;
   } else {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.ceil((totalSeconds % 3600) / 60);
-    return `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minute${minutes > 1 ? 's' : ''}`;
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.ceil((seconds % 3600) / 60);
+    return `${hours}h ${minutes}m`;
   }
 }

@@ -80,13 +80,20 @@ ${ex.body}
 You are an expert cold email copywriter. Your task is to write ${emailCount} DIFFERENT hyper-personalized cold emails for the same target.
 
 CRITICAL CONSTRAINTS:
-1. EMAIL BODY MUST BE UNDER 100 WORDS (this is non-negotiable)
-2. SUBJECT LINE MUST BE 1-4 WORDS ONLY (short, punchy, intriguing)
-3. Use the target's first name naturally
-4. Sound human, conversational, not salesy
-5. Reference specific details from their website/info
-6. Make the connection between their needs and sender's offering clear
+1. EMAIL BODY MUST BE 80-100 WORDS EXACTLY (no more, no less - this is non-negotiable)
+2. SUBJECT LINE MUST BE 1-3 WORDS ONLY (short, punchy, intriguing)
+3. Personalization in the FIRST LINE - reference something specific about them
+4. Call out a challenge they face
+5. Offer a perspective on "a better way"
+6. Interest-based, low friction CTA (don't ask for time - ask if they're open to learning more)
 7. Each email should have a DIFFERENT angle/hook - vary the approach!
+
+STYLE RULES:
+- Minimize "I, we, our" language - focus on THEM
+- Zero marketing jargon - write the way you speak
+- Professional but not overly formal
+- Plenty of white space (no big chunks of text)
+- Sound human, conversational, not salesy
 
 STYLE TO USE: ${style.name}
 ${style.promptTemplate}
@@ -149,40 +156,40 @@ EMAIL INTENT (what the sender wants to achieve):
 ${intent}
 
 NOW GENERATE ${emailCount} DIFFERENT EMAILS:
+- Each email MUST be 80-100 words (count carefully - no exceptions)
 - Each email should have a unique angle/hook
-- Address ${targetFirstName} by name
-- Reference something SPECIFIC from their company/website
-- Connect their situation to the sender's offering
-- Keep each body UNDER 100 words
-- Subject line: 1-4 words only, lowercase, no punctuation
-- End with a soft, low-commitment ask
+- Personalize the FIRST LINE with something specific about ${targetFirstName} or their company
+- Call out a challenge they face, then offer a better way
+- Minimize "I, we, our" - focus on them
+- Subject line: 1-3 words only, lowercase, no punctuation
+- End with interest-based CTA (e.g., "Open to learning more?" - don't ask for time)
 
 Return in this EXACT format for each email:
 
 EMAIL 1:
-SUBJECT: [1-4 word subject line]
+SUBJECT: [1-3 words, lowercase]
 BODY:
-[email body under 100 words]
+[80-100 words - personalized first line, challenge + better way, soft CTA]
 
 EMAIL 2:
-SUBJECT: [1-4 word subject line]
+SUBJECT: [1-3 words, lowercase]
 BODY:
-[email body under 100 words]
+[80-100 words - personalized first line, challenge + better way, soft CTA]
 
 EMAIL 3:
-SUBJECT: [1-4 word subject line]
+SUBJECT: [1-3 words, lowercase]
 BODY:
-[email body under 100 words]
+[80-100 words - personalized first line, challenge + better way, soft CTA]
 
 EMAIL 4:
-SUBJECT: [1-4 word subject line]
+SUBJECT: [1-3 words, lowercase]
 BODY:
-[email body under 100 words]
+[80-100 words - personalized first line, challenge + better way, soft CTA]
 
 EMAIL 5:
-SUBJECT: [1-4 word subject line]
+SUBJECT: [1-3 words, lowercase]
 BODY:
-[email body under 100 words]
+[80-100 words - personalized first line, challenge + better way, soft CTA]
 `.trim();
 }
 

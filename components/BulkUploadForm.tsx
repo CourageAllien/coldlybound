@@ -18,6 +18,21 @@ interface BulkUploadFormProps {
   isLoading: boolean;
 }
 
+// Estimate ~4 seconds per prospect (scrape + generation)
+function formatEstimatedTime(prospectCount: number): string {
+  const seconds = prospectCount * 4;
+  if (seconds < 60) {
+    return `${seconds} seconds`;
+  } else if (seconds < 3600) {
+    const mins = Math.ceil(seconds / 60);
+    return `${mins} minute${mins > 1 ? 's' : ''}`;
+  } else {
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.ceil((seconds % 3600) / 60);
+    return `${hours}h ${mins}m`;
+  }
+}
+
 export default function BulkUploadForm({ onSubmit, isLoading }: BulkUploadFormProps) {
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [csvValidation, setCsvValidation] = useState<CSVValidationResult | null>(null);
@@ -183,16 +198,33 @@ export default function BulkUploadForm({ onSubmit, isLoading }: BulkUploadFormPr
               </div>
               
               {csvValidation.isValid && (
-                <div style={{ 
-                  display: 'flex', 
-                  gap: 16, 
-                  justifyContent: 'center',
-                  fontSize: 14,
-                  color: 'var(--text-secondary)'
-                }}>
-                  <span><strong>{csvValidation.rowCount}</strong> prospects</span>
-                  <span><strong>3</strong> emails each</span>
-                  <span><strong>{csvValidation.rowCount * 3}</strong> total emails</span>
+                <div>
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: 16, 
+                    justifyContent: 'center',
+                    fontSize: 14,
+                    color: 'var(--text-secondary)',
+                    marginBottom: 8
+                  }}>
+                    <span><strong>{csvValidation.rowCount}</strong> prospects</span>
+                    <span><strong>3</strong> emails each</span>
+                    <span><strong>{csvValidation.rowCount * 3}</strong> total emails</span>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    padding: '8px 16px',
+                    background: 'rgba(99, 102, 241, 0.1)',
+                    borderRadius: 8,
+                    fontSize: 13,
+                    color: 'var(--brand)'
+                  }}>
+                    <span>⏱️</span>
+                    <span>Estimated time: <strong>{formatEstimatedTime(csvValidation.rowCount)}</strong></span>
+                  </div>
                 </div>
               )}
               
@@ -222,7 +254,7 @@ export default function BulkUploadForm({ onSubmit, isLoading }: BulkUploadFormPr
               <p style={{ marginBottom: 8 }}>
                 <span style={{ color: 'var(--brand)', fontWeight: 500 }}>Click to upload</span> or drag and drop
               </p>
-              <p style={{ fontSize: 13 }}>CSV file with up to 5,000 prospects</p>
+              <p style={{ fontSize: 13 }}>CSV file with up to 1,000 prospects</p>
             </div>
           )}
         </div>
@@ -330,9 +362,11 @@ export default function BulkUploadForm({ onSubmit, isLoading }: BulkUploadFormPr
         )}
       </button>
       
-      {csvValidation?.isValid && csvValidation.rowCount > 100 && (
+      {csvValidation?.isValid && (
         <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 12, textAlign: 'center' }}>
-          Large batches may take several minutes to process. You can leave this page and return later.
+          {csvValidation.rowCount > 50 
+            ? `Processing ${csvValidation.rowCount} prospects will take ~${formatEstimatedTime(csvValidation.rowCount)}. You can leave this page and return later.`
+            : 'You can leave this page during processing. Progress continues in the background.'}
         </p>
       )}
     </form>

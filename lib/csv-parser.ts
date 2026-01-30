@@ -8,7 +8,7 @@ export interface CSVValidationResult {
   rowCount: number;
 }
 
-const MAX_PROSPECTS = 5000;
+const MAX_PROSPECTS = 1000;
 
 // Column name aliases for flexible matching
 const COLUMN_ALIASES: Record<string, string[]> = {
@@ -146,16 +146,10 @@ export function validateAndParseCSV(csvContent: string): CSVValidationResult {
     return result;
   }
   
-  if (rows.length > MAX_PROSPECTS) {
-    result.isValid = false;
-    result.errors.push(`CSV has ${rows.length} rows, but maximum allowed is ${MAX_PROSPECTS}`);
-    return result;
-  }
-  
-  result.rowCount = rows.length;
-  
-  // Parse each row into a BulkProspect
+  // Parse each row into a BulkProspect - only include rows with required data
   const validationErrors: string[] = [];
+  const validProspects: BulkProspect[] = [];
+  let skippedEmptyRows = 0;
   
   rows.forEach((row, rowIndex) => {
     const prospect: BulkProspect = {
@@ -210,6 +204,13 @@ export function validateAndParseCSV(csvContent: string): CSVValidationResult {
       }
     });
     
+    // Check if this is an empty row (no required fields at all)
+    const hasAnyData = prospect.firstName || prospect.email || prospect.companyName || prospect.website;
+    if (!hasAnyData) {
+      skippedEmptyRows++;
+      return; // Skip completely empty rows
+    }
+    
     // Validate required fields
     const rowNum = rowIndex + 2;
     const rowErrors: string[] = [];
@@ -233,8 +234,32 @@ export function validateAndParseCSV(csvContent: string): CSVValidationResult {
     // Determine confidence based on available data
     prospect.confidence = calculateConfidence(prospect);
     
-    result.prospects.push(prospect);
+    // Only add prospects that have at least some data
+    validProspects.push(prospect);
   });
+  
+  // Check if we have valid prospects after filtering
+  if (validProspects.length === 0) {
+    result.isValid = false;
+    result.errors.push('No valid prospects found in CSV. Make sure rows have First Name, Email, Company Name, and Website.');
+    return result;
+  }
+  
+  // Check max limit on valid prospects only
+  if (validProspects.length > MAX_PROSPECTS) {
+    result.isValid = false;
+    result.errors.push(`CSV has ${validProspects.length} valid rows, but maximum allowed is ${MAX_PROSPECTS}`);
+    return result;
+  }
+  
+  // Set the correct row count based on valid prospects
+  result.rowCount = validProspects.length;
+  result.prospects = validProspects;
+  
+  // Add info about skipped rows
+  if (skippedEmptyRows > 0) {
+    result.warnings.push(`Skipped ${skippedEmptyRows} empty row${skippedEmptyRows > 1 ? 's' : ''}`);
+  }
   
   // Add validation errors as warnings (don't fail the whole upload)
   if (validationErrors.length > 0) {

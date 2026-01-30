@@ -9,8 +9,8 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// For Vercel, process up to 10 prospects synchronously (within timeout limits)
-const SYNC_PROCESS_LIMIT = 10;
+// Estimated time per prospect in seconds (scrape + generation)
+const SECONDS_PER_PROSPECT = 4;
 
 export async function POST(request: Request) {
   try {
@@ -58,9 +58,9 @@ export async function POST(request: Request) {
       );
     }
     
-    if (prospects.length > 5000) {
+    if (prospects.length > 1000) {
       return NextResponse.json(
-        { error: 'Maximum 5000 prospects allowed' },
+        { error: 'Maximum 1000 prospects allowed' },
         { status: 400 }
       );
     }
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
       );
     }
     
-    // Scrape sender website once
+    // Scrape sender website once (this is shared across all prospects)
     let senderData: ScrapedData;
     try {
       senderData = await scrapeWebsite(senderUrl);
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
       };
     }
     
-    // Transform "What We Do"
+    // Transform "What We Do" once (this is shared across all prospects)
     let transformedWhatWeDo = whatWeDo;
     try {
       const transformResponse = await anthropic.messages.create({
@@ -141,60 +141,33 @@ OUTPUT only the transformed statement, nothing else:`
       console.log('Transform failed, using original:', e);
     }
     
-    // Process prospects synchronously (for Vercel compatibility)
-    let processedCount = 0;
-    let successCount = 0;
-    let failedCount = 0;
+    // Calculate estimated time
+    const estimatedSeconds = prospects.length * SECONDS_PER_PROSPECT;
+    const estimatedMinutes = Math.ceil(estimatedSeconds / 60);
     
-    // Process all prospects (limit to SYNC_PROCESS_LIMIT for Vercel timeout)
-    const prospectsToProcess = prospects.slice(0, Math.min(prospects.length, SYNC_PROCESS_LIMIT));
+    // Prepare job data - store sender_data and transformed value in a metadata field
+    // This way we don't need new columns in the database
+    const jobMetadata = {
+      senderData,
+      transformedWhatWeDo,
+      estimatedSeconds,
+    };
     
-    for (const prospect of prospectsToProcess) {
-      try {
-        const result = await processProspect(
-          prospect,
-          style,
-          senderData,
-          transformedWhatWeDo,
-          intent,
-          attachedFileContent
-        );
-        
-        if (result) {
-          prospect.generatedEmail1 = result.generatedEmail1;
-          prospect.generatedEmail2 = result.generatedEmail2;
-          prospect.generatedEmail3 = result.generatedEmail3;
-          prospect.status = 'completed';
-          successCount++;
-        } else {
-          prospect.status = 'failed';
-          prospect.error = 'No emails generated';
-          failedCount++;
-        }
-      } catch (error) {
-        prospect.status = 'failed';
-        prospect.error = error instanceof Error ? error.message : 'Processing failed';
-        failedCount++;
-      }
-      processedCount++;
-    }
-    
-    // Create completed job in Supabase
+    // Create job in Supabase with status 'pending' - processing will happen via chunks
     const { data: job, error: dbError } = await supabase
       .from('bulk_jobs')
       .insert({
-        status: 'completed',
+        status: 'pending',
         total_prospects: prospects.length,
-        processed_count: processedCount,
-        success_count: successCount,
-        failed_count: failedCount,
+        processed_count: 0,
+        success_count: 0,
+        failed_count: 0,
         sender_url: senderUrl,
-        sender_what_we_do: whatWeDo,
+        sender_what_we_do: JSON.stringify(jobMetadata), // Store metadata here
         sender_intent: intent,
         style_slug: styleSlug,
         attached_file_content: attachedFileContent.slice(0, 10000),
         prospects_data: JSON.stringify(prospects),
-        completed_at: new Date().toISOString(),
       })
       .select()
       .single();
@@ -209,11 +182,11 @@ OUTPUT only the transformed statement, nothing else:`
     
     return NextResponse.json({
       jobId: job.id,
-      status: 'completed',
+      status: 'pending',
       totalProspects: prospects.length,
-      processedCount,
-      successCount,
-      failedCount,
+      estimatedMinutes,
+      estimatedSeconds,
+      message: `Job created. Estimated time: ${formatTime(estimatedSeconds)}`,
     });
     
   } catch (error) {
@@ -225,144 +198,17 @@ OUTPUT only the transformed statement, nothing else:`
   }
 }
 
-async function processProspect(
-  prospect: BulkProspect,
-  style: { name: string; promptTemplate: string; guidelines: string[] },
-  senderData: ScrapedData,
-  transformedWhatWeDo: string,
-  intent: string,
-  additionalInfo?: string
-): Promise<{ generatedEmail1: string; generatedEmail2: string; generatedEmail3: string } | null> {
-  // Scrape target website
-  let targetData: ScrapedData;
-  try {
-    targetData = await scrapeWebsite(prospect.website);
-  } catch {
-    targetData = {
-      url: prospect.website,
-      companyName: prospect.companyName || 'Company',
-      description: 'No description available',
-      keyPoints: [],
-      businessType: 'b2b company',
-      caseStudies: [],
-      testimonials: [],
-    };
+function formatTime(seconds: number): string {
+  if (seconds < 60) {
+    return `${seconds} seconds`;
+  } else if (seconds < 3600) {
+    const mins = Math.ceil(seconds / 60);
+    return `${mins} minute${mins > 1 ? 's' : ''}`;
+  } else {
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.ceil((seconds % 3600) / 60);
+    return `${hours} hour${hours > 1 ? 's' : ''} ${mins} minute${mins > 1 ? 's' : ''}`;
   }
-  
-  // Build prompt for 3 emails
-  const prompt = `
-You are an expert cold email copywriter. Write 3 DIFFERENT hyper-personalized cold emails.
-
-CRITICAL CONSTRAINTS:
-1. EMAIL BODY MUST BE UNDER 100 WORDS (non-negotiable)
-2. SUBJECT LINE: 1-4 words only, lowercase, no punctuation
-3. Use the target's first name naturally
-4. Reference specific details from their website/company
-5. Each email should have a DIFFERENT angle/hook
-
-STYLE: ${style.name}
-${style.promptTemplate}
-
-STYLE GUIDELINES:
-${style.guidelines.map(g => `- ${g}`).join('\n')}
-
-TARGET PROSPECT:
-- First Name: ${prospect.firstName}
-- Last Name: ${prospect.lastName}
-- Job Title: ${prospect.jobTitle}
-- Company: ${prospect.companyName}
-- Website: ${prospect.website}
-${prospect.city ? `- Location: ${prospect.city}${prospect.country ? ', ' + prospect.country : ''}` : ''}
-
-TARGET COMPANY RESEARCH:
-- Company: ${targetData.companyName}
-- What they do: ${targetData.description}
-- Key details: ${targetData.keyPoints.join(', ') || 'None found'}
-- Business type: ${targetData.businessType}
-${targetData.rawContent ? `\nWebsite excerpt:\n${targetData.rawContent.slice(0, 1000)}` : ''}
-
-SENDER (what you're pitching):
-- Company: ${senderData.companyName}
-- Value Proposition: ${transformedWhatWeDo}
-- Intent: ${intent}
-${senderData.caseStudies && senderData.caseStudies.length > 0 ? `
-VERIFIED CASE STUDIES (use only these, don't invent):
-${senderData.caseStudies.map((cs, i) => `${i + 1}. ${cs.company}: ${cs.result}`).join('\n')}
-` : ''}
-${additionalInfo ? `\nAdditional context:\n${additionalInfo.slice(0, 1000)}` : ''}
-
-CRITICAL: If no case studies provided, DO NOT invent any. Focus on value proposition instead.
-
-Generate 3 emails in this EXACT format:
-
-EMAIL 1:
-SUBJECT: [1-4 word subject]
-BODY:
-[Full email body - under 100 words]
-
-EMAIL 2:
-SUBJECT: [1-4 word subject]
-BODY:
-[Full email body - under 100 words]
-
-EMAIL 3:
-SUBJECT: [1-4 word subject]
-BODY:
-[Full email body - under 100 words]
-`.trim();
-  
-  // Generate with Claude
-  const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 2000,
-    messages: [{ role: 'user', content: prompt }],
-  });
-  
-  const textContent = response.content.find(block => block.type === 'text');
-  if (!textContent || textContent.type !== 'text') {
-    throw new Error('No text content in response');
-  }
-  
-  // Parse 3 emails
-  const emails = parseThreeEmails(textContent.text);
-  
-  return {
-    generatedEmail1: emails[0] || '',
-    generatedEmail2: emails[1] || '',
-    generatedEmail3: emails[2] || '',
-  };
-}
-
-function parseThreeEmails(response: string): string[] {
-  const emails: string[] = [];
-  
-  const emailSections = response.split(/EMAIL\s*\d+:/i).filter(s => s.trim());
-  
-  for (const section of emailSections.slice(0, 3)) {
-    const subjectMatch = section.match(/SUBJECT:\s*(.+?)(?:\n|$)/i);
-    const bodyMatch = section.match(/BODY:\s*\n?([\s\S]+?)(?=EMAIL\s*\d+:|$)/i);
-    
-    let subject = subjectMatch ? subjectMatch[1].trim() : 'quick question';
-    subject = subject.replace(/^["']|["']$/g, '').toLowerCase();
-    
-    const subjectWords = subject.split(/\s+/);
-    if (subjectWords.length > 4) {
-      subject = subjectWords.slice(0, 4).join(' ');
-    }
-    
-    let body = bodyMatch ? bodyMatch[1].trim() : '';
-    body = body.replace(/^---+\s*$/gm, '').replace(/EMAIL\s*\d+:\s*$/i, '').trim();
-    
-    if (body) {
-      emails.push(`Subject: ${subject}\n\n${body}`);
-    }
-  }
-  
-  while (emails.length < 3) {
-    emails.push('');
-  }
-  
-  return emails;
 }
 
 // Simple text extraction helpers
