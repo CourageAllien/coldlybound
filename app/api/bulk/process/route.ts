@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { supabase } from '@/lib/supabase';
 import { scrapeWebsite } from '@/lib/scraper';
-import { BulkProspect, ScrapedData } from '@/lib/types';
+import { getStyleBySlug } from '@/lib/styles';
+import { BulkProspect, ScrapedData, EmailStyle } from '@/lib/types';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -118,12 +119,14 @@ export async function POST(request: Request) {
       transformedWhatWeDo = job.sender_intent;
     }
     
-    // Get style info for prompt
-    const styleInfo = {
-      name: job.style_slug,
-      promptTemplate: '',
-      guidelines: [],
-    };
+    // Get the ACTUAL style with all its templates and examples
+    const style = await getStyleBySlug(job.style_slug);
+    if (!style) {
+      console.error(`Style not found: ${job.style_slug}`);
+      // Use a fallback but log the error
+    }
+    
+    console.log(`Job ${jobId}: Using style "${style?.name || job.style_slug}"`);
     
     // Update status to processing
     if (job.status === 'pending') {
@@ -174,7 +177,7 @@ export async function POST(request: Request) {
       const batchResults = await Promise.allSettled(
         batch.map(prospect => processProspect(
           prospect, 
-          styleInfo, 
+          style, 
           senderData, 
           transformedWhatWeDo, 
           job.sender_intent,
@@ -255,7 +258,7 @@ export async function POST(request: Request) {
 
 async function processProspect(
   prospect: BulkProspect,
-  style: { name: string; promptTemplate: string; guidelines: string[] },
+  style: EmailStyle | null,
   senderData: ScrapedData,
   transformedWhatWeDo: string,
   intent: string,
@@ -320,34 +323,57 @@ function buildBulkPrompt(input: {
   prospect: BulkProspect;
   targetData: ScrapedData;
   senderData: ScrapedData;
-  style: { name: string; promptTemplate: string; guidelines: string[] };
+  style: EmailStyle | null;
   intent: string;
   transformedWhatWeDo: string;
   additionalInfo?: string;
 }): string {
   const { prospect, targetData, senderData, style, intent, transformedWhatWeDo, additionalInfo } = input;
   
+  // Build examples section from style
+  const examplesSection = style?.examples?.length ? `
+STYLE EXAMPLES (Follow this tone, structure, and approach):
+${style.examples.slice(0, 2).map((ex, i) => `
+--- EXAMPLE ${i + 1} ---
+Context: ${ex.context}
+Subject: ${ex.subject}
+Body:
+${ex.body}
+Why it works: ${ex.whyItWorks}
+---
+`).join('\n')}
+` : '';
+
+  // Build guidelines section
+  const guidelinesSection = style?.guidelines?.length ? `
+STYLE GUIDELINES (MUST FOLLOW):
+${style.guidelines.map(g => `- ${g}`).join('\n')}
+` : '';
+
   return `
-You are an expert cold email copywriter. Write 3 DIFFERENT hyper-personalized cold emails.
+You are an expert cold email copywriter using the "${style?.name || 'Professional'}" framework.
 
-CRITICAL CONSTRAINTS:
-1. EMAIL BODY MUST BE 80-100 WORDS EXACTLY (no more, no less - count carefully!)
-2. SUBJECT LINE: 1-3 words only, lowercase, no punctuation
-3. Personalization in the FIRST LINE - reference something specific about them
-4. Call out a challenge they face, then offer a perspective on "a better way"
-5. Each email should have a DIFFERENT angle/hook
-6. Interest-based, low friction CTA (e.g., "Open to learning more?" - don't ask for time!)
+=== EMAIL STYLE FRAMEWORK ===
+${style?.promptTemplate || 'Write professional, personalized cold emails.'}
 
-STYLE RULES:
+${guidelinesSection}
+
+${examplesSection}
+
+=== CRITICAL FORMAT REQUIREMENTS ===
+1. Each email MUST be 3-5 paragraphs (not less than 3, not more than 5)
+2. Total word count: 80-100 words per email
+3. SUBJECT LINE: 1-3 words only, lowercase, no punctuation
+4. Each email must use a DIFFERENT angle/hook based on the ${style?.name || 'chosen'} framework
+5. End with a soft, interest-based CTA (not asking for time/meeting)
+
+=== STYLE RULES ===
 - Minimize "I, we, our" language - focus on THEM
-- Zero marketing jargon - write the way you speak
+- Zero marketing jargon - write conversationally
 - Professional but not overly formal
-- Plenty of white space (no big chunks of text)
+- Use plenty of white space between paragraphs
 
-STYLE: ${style.name}
-${style.promptTemplate}
-
-TARGET PROSPECT:
+=== TARGET PROSPECT ===
 - First Name: ${prospect.firstName}
 - Last Name: ${prospect.lastName}
 - Job Title: ${prospect.jobTitle}
@@ -355,14 +381,14 @@ TARGET PROSPECT:
 - Website: ${prospect.website}
 ${prospect.city ? `- Location: ${prospect.city}${prospect.country ? ', ' + prospect.country : ''}` : ''}
 
-TARGET COMPANY RESEARCH:
+=== TARGET COMPANY RESEARCH ===
 - Company: ${targetData.companyName}
 - What they do: ${targetData.description}
 - Key details: ${targetData.keyPoints.join(', ') || 'None found'}
 - Business type: ${targetData.businessType}
 ${targetData.rawContent ? `\nWebsite excerpt:\n${targetData.rawContent.slice(0, 1000)}` : ''}
 
-SENDER (what you're pitching):
+=== SENDER INFO ===
 - Company: ${senderData.companyName}
 - Value Proposition: ${transformedWhatWeDo}
 - Intent: ${intent}
@@ -372,24 +398,34 @@ ${senderData.caseStudies.map((cs, i) => `${i + 1}. ${cs.company}: ${cs.result}`)
 ` : ''}
 ${additionalInfo ? `\nAdditional context:\n${additionalInfo.slice(0, 1000)}` : ''}
 
-CRITICAL: If no case studies provided, DO NOT invent any. Focus on value proposition instead.
+CRITICAL: If no case studies provided, DO NOT invent any.
 
-Generate 3 emails in this EXACT format (each 80-100 words):
+=== GENERATE 3 DIFFERENT EMAILS ===
+Each email should apply the "${style?.name || 'Professional'}" framework differently.
+Format each exactly like this:
 
 EMAIL 1:
-SUBJECT: [1-3 word subject, lowercase]
+SUBJECT: [1-3 words, lowercase]
 BODY:
-[80-100 words - personalized first line, challenge + better way, soft CTA]
+[Paragraph 1: Opening hook using the ${style?.name || 'chosen'} approach]
+
+[Paragraph 2: Connection to their situation]
+
+[Paragraph 3: Your value/relevance]
+
+[Paragraph 4-5 (optional): Additional context or social proof]
+
+[Final line: Soft CTA]
 
 EMAIL 2:
-SUBJECT: [1-3 word subject, lowercase]
+SUBJECT: [1-3 words, lowercase]  
 BODY:
-[80-100 words - personalized first line, challenge + better way, soft CTA]
+[Different angle using the same framework - 3-5 paragraphs, 80-100 words]
 
 EMAIL 3:
-SUBJECT: [1-3 word subject, lowercase]
+SUBJECT: [1-3 words, lowercase]
 BODY:
-[80-100 words - personalized first line, challenge + better way, soft CTA]
+[Another unique angle using the same framework - 3-5 paragraphs, 80-100 words]
 `.trim();
 }
 
