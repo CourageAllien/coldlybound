@@ -1,13 +1,21 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Loader2, CheckCircle, XCircle, RefreshCw, Clock, FileDown } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle, RefreshCw, Clock, FileDown, Home, ChevronDown } from 'lucide-react';
 
 interface BulkProgressProps {
   jobId: string;
   initialTotal: number;
   onComplete: () => void;
   onNewJob: () => void;
+}
+
+interface StyleSummary {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  tone: string;
 }
 
 // Estimate ~4 seconds per prospect
@@ -22,8 +30,34 @@ export default function BulkProgress({ jobId, initialTotal, onComplete, onNewJob
   const [error, setError] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
   
+  // Regenerate state
+  const [isRegenerating, setIsRegenerating] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
+  const [styles, setStyles] = useState<StyleSummary[]>([]);
+  const [styleDropdownOpen, setStyleDropdownOpen] = useState(false);
+  
   const mountedRef = useRef(true);
   const isProcessingRef = useRef(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Fetch styles on mount
+  useEffect(() => {
+    fetch('/api/styles')
+      .then(res => res.json())
+      .then(setStyles)
+      .catch(console.error);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setStyleDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Process chunks until complete
   useEffect(() => {
@@ -121,7 +155,90 @@ export default function BulkProgress({ jobId, initialTotal, onComplete, onNewJob
     }
   };
 
-  if (error) {
+  const handleRegenerate = async () => {
+    if (!selectedStyle) {
+      setError('Please select a style first');
+      return;
+    }
+    
+    setIsRegenerating(true);
+    setIsComplete(false);
+    setProcessedCount(0);
+    setSuccessCount(0);
+    setFailedCount(0);
+    setError(null);
+    
+    try {
+      // Reset job status and re-process with new style
+      const response = await fetch('/api/bulk/regenerate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jobId, styleSlug: selectedStyle }),
+      });
+      
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to start regeneration');
+      }
+      
+      // Reset processing flag and start processing again
+      isProcessingRef.current = false;
+      setIsRegenerating(false);
+      
+      // Trigger processing loop again
+      const processNextChunk = async () => {
+        if (isProcessingRef.current || !mountedRef.current) return;
+        isProcessingRef.current = true;
+        
+        try {
+          const res = await fetch('/api/bulk/process', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jobId }),
+          });
+          
+          if (!mountedRef.current) return;
+          
+          const data = await res.json();
+          
+          if (!res.ok) {
+            throw new Error(data.error || 'Processing failed');
+          }
+          
+          setProcessedCount(data.processedCount || 0);
+          setSuccessCount(data.successCount || 0);
+          setFailedCount(data.failedCount || 0);
+          
+          if (data.isComplete || data.status === 'completed') {
+            setIsComplete(true);
+            onComplete();
+          } else {
+            isProcessingRef.current = false;
+            setTimeout(() => {
+              if (mountedRef.current) processNextChunk();
+            }, 200);
+          }
+        } catch (err) {
+          if (mountedRef.current) {
+            setError(err instanceof Error ? err.message : 'Processing failed');
+          }
+        } finally {
+          isProcessingRef.current = false;
+        }
+      };
+      
+      processNextChunk();
+      
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Regeneration failed');
+      setIsComplete(true);
+      setIsRegenerating(false);
+    }
+  };
+
+  const selectedStyleName = styles.find(s => s.slug === selectedStyle)?.name;
+
+  if (error && !isComplete) {
     return (
       <div style={{ 
         background: 'var(--bg-elevated)', 
@@ -145,8 +262,8 @@ export default function BulkProgress({ jobId, initialTotal, onComplete, onNewJob
         <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>Error</h3>
         <p style={{ color: 'var(--text-muted)', marginBottom: 24 }}>{error}</p>
         <button onClick={onNewJob} className="btn-secondary">
-          <RefreshCw size={16} />
-          Start New Job
+          <Home size={16} />
+          Start New
         </button>
       </div>
     );
@@ -191,7 +308,9 @@ export default function BulkProgress({ jobId, initialTotal, onComplete, onNewJob
         ) : (
           <>
             <Loader2 size={40} className="animate-spin" style={{ margin: '0 auto 16px', color: 'var(--brand)' }} />
-            <h2 style={{ fontSize: 24, fontWeight: 600, marginBottom: 8 }}>Generating Emails...</h2>
+            <h2 style={{ fontSize: 24, fontWeight: 600, marginBottom: 8 }}>
+              {isRegenerating ? 'Regenerating Emails...' : 'Generating Emails...'}
+            </h2>
             <p style={{ color: 'var(--text-secondary)' }}>
               Processing {totalProspects} prospects × 3 emails each = {totalProspects * 3} emails
             </p>
@@ -291,7 +410,112 @@ export default function BulkProgress({ jobId, initialTotal, onComplete, onNewJob
         </div>
       )}
 
-      {/* Actions - Download only visible when complete */}
+      {/* Regenerate Section - only show when complete */}
+      {isComplete && (
+        <div style={{ 
+          background: 'var(--bg-base)', 
+          borderRadius: 12, 
+          padding: 16, 
+          marginBottom: 24
+        }}>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12 }}>
+            Want to try a different style? Select one and regenerate:
+          </p>
+          <div style={{ display: 'flex', gap: 12 }}>
+            {/* Style Selector Dropdown */}
+            <div ref={dropdownRef} style={{ flex: 1, position: 'relative' }}>
+              <button
+                type="button"
+                onClick={() => setStyleDropdownOpen(!styleDropdownOpen)}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  background: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 10,
+                  color: selectedStyle ? 'var(--text-primary)' : 'var(--text-muted)',
+                  fontSize: 14,
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <span>{selectedStyleName || 'Select a style...'}</span>
+                <ChevronDown size={16} style={{ 
+                  color: 'var(--text-muted)', 
+                  transform: styleDropdownOpen ? 'rotate(180deg)' : 'none', 
+                  transition: 'transform 0.2s' 
+                }} />
+              </button>
+              
+              {styleDropdownOpen && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: '100%',
+                  left: 0,
+                  right: 0,
+                  marginBottom: 8,
+                  background: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 10,
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+                  maxHeight: 250,
+                  overflowY: 'auto',
+                  zIndex: 100,
+                }}>
+                  {styles.map(style => (
+                    <button
+                      key={style.id}
+                      type="button"
+                      onClick={() => { 
+                        setSelectedStyle(style.slug); 
+                        setStyleDropdownOpen(false); 
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        background: selectedStyle === style.slug ? 'var(--brand-muted)' : 'transparent',
+                        border: 'none',
+                        borderBottom: '1px solid var(--border-subtle)',
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        fontSize: 14,
+                        color: 'var(--text-primary)',
+                      }}
+                    >
+                      <div style={{ fontWeight: 500 }}>{style.name}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                        {style.tone} • {style.description.slice(0, 50)}...
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {/* Regenerate Button */}
+            <button
+              onClick={handleRegenerate}
+              disabled={!selectedStyle || isRegenerating}
+              className="btn-secondary"
+              style={{ 
+                opacity: !selectedStyle ? 0.5 : 1,
+                cursor: !selectedStyle ? 'not-allowed' : 'pointer',
+              }}
+            >
+              <RefreshCw size={16} />
+              Regenerate
+            </button>
+          </div>
+          {error && (
+            <p style={{ fontSize: 12, color: 'var(--error)', marginTop: 8 }}>{error}</p>
+          )}
+        </div>
+      )}
+
+      {/* Actions */}
       <div style={{ display: 'flex', gap: 12 }}>
         {isComplete && (
           <button 
@@ -314,9 +538,9 @@ export default function BulkProgress({ jobId, initialTotal, onComplete, onNewJob
           </button>
         )}
         
-        <button onClick={onNewJob} className="btn-secondary" style={{ flex: isComplete ? 0 : 1 }}>
-          <RefreshCw size={16} />
-          {isComplete ? 'New Job' : 'Cancel'}
+        <button onClick={onNewJob} className="btn-secondary" style={{ flex: isComplete ? 'none' : 1 }}>
+          <Home size={16} />
+          {isComplete ? 'Start New' : 'Cancel'}
         </button>
       </div>
     </div>
