@@ -195,11 +195,23 @@ NO VERIFIED TESTIMONIALS FOUND - DO NOT INVENT OR MAKE UP ANY TESTIMONIALS OR RE
 PITCH/INTENT:
 ${intent}
 
-CRITICAL AUTHENTICITY RULE:
-- ONLY reference case studies, testimonials, statistics, or client names that are listed above
-- If no case studies or testimonials are provided, DO NOT make any up
-- NEVER invent fake companies, fake statistics, or fake quotes
-- It's better to focus on the value proposition than to use made-up social proof
+CRITICAL AUTHENTICITY RULES (MUST FOLLOW - NO EXCEPTIONS):
+1. ONLY reference case studies, testimonials, or statistics that are EXPLICITLY listed above
+2. If no case studies are provided, DO NOT invent any - focus on the value proposition instead
+3. NEVER fabricate:
+   - Percentage claims (e.g., "increased by 47%")
+   - Company names as social proof (e.g., "companies like X, Y, Z")
+   - Dollar amounts or revenue figures
+   - Specific timeframes with results (e.g., "in just 30 days")
+   - Testimonial quotes with attribution
+   - Client counts (e.g., "500+ companies")
+   - ROI multipliers (e.g., "3x ROI")
+4. DO NOT use phrases like "studies show", "research indicates", "proven to"
+5. Instead, focus on:
+   - The value proposition and what you can do for them
+   - Questions about their potential challenges
+   - Observations from your research about their business
+   - Genuine curiosity about their situation
 
 DIFFERENTIATION CHECK:
 - Make sure your mechanism is NOT generic (avoid saturated terms like "SEO", "Facebook ads" unless reframed)

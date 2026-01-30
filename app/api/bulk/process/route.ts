@@ -3,6 +3,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { supabase } from '@/lib/supabase';
 import { scrapeWebsite } from '@/lib/scraper';
 import { getStyleBySlug } from '@/lib/styles';
+import { validateEmails } from '@/lib/email-validator';
 import { BulkProspect, ScrapedData, EmailStyle } from '@/lib/types';
 
 const anthropic = new Anthropic({
@@ -307,6 +308,21 @@ async function processProspect(
     // Parse 3 emails
     const emails = parseThreeEmails(textContent.text);
     
+    // Validate emails for fabricated content
+    const verifiedCaseStudies = senderData.caseStudies?.map(cs => `${cs.company}: ${cs.result}`) || [];
+    const verifiedTestimonials = senderData.testimonials?.map(t => t.quote) || [];
+    
+    const validation = validateEmails(emails, verifiedCaseStudies, verifiedTestimonials);
+    
+    if (!validation.overallValid) {
+      console.warn(`[QA WARNING] Prospect ${prospect.email}: ${validation.totalWarnings} potential fabrication(s) detected`);
+      validation.results.forEach((result, idx) => {
+        if (result.warnings.length > 0) {
+          console.warn(`  Email ${idx + 1}: ${result.warnings.join('; ')}`);
+        }
+      });
+    }
+    
     return {
       generatedEmail1: emails[0] || '',
       generatedEmail2: emails[1] || '',
@@ -393,12 +409,36 @@ ${targetData.rawContent ? `\nWebsite excerpt:\n${targetData.rawContent.slice(0, 
 - Value Proposition: ${transformedWhatWeDo}
 - Intent: ${intent}
 ${senderData.caseStudies && senderData.caseStudies.length > 0 ? `
-VERIFIED CASE STUDIES (use only these, don't invent):
+VERIFIED CASE STUDIES (you may ONLY reference these exact ones):
 ${senderData.caseStudies.map((cs, i) => `${i + 1}. ${cs.company}: ${cs.result}`).join('\n')}
+` : `
+NO CASE STUDIES PROVIDED - Do not reference any client names, results, or statistics.
+`}
+${senderData.testimonials && senderData.testimonials.length > 0 ? `
+VERIFIED TESTIMONIALS (you may ONLY use these exact quotes):
+${senderData.testimonials.map((t, i) => `${i + 1}. "${t.quote}" - ${t.author}`).join('\n')}
 ` : ''}
 ${additionalInfo ? `\nAdditional context:\n${additionalInfo.slice(0, 1000)}` : ''}
 
-CRITICAL: If no case studies provided, DO NOT invent any.
+=== ANTI-FABRICATION RULES (CRITICAL - MUST FOLLOW) ===
+DO NOT invent or fabricate ANY of the following:
+1. NO fake percentages (e.g., "increased by 47%") unless from verified case studies above
+2. NO fake company names as social proof (e.g., "companies like Acme, TechCorp use us")
+3. NO fake statistics or data points
+4. NO fake testimonials or quotes
+5. NO fake dollar amounts or revenue claims
+6. NO fake timeframes with results (e.g., "in just 30 days")
+7. NO "studies show" or "research indicates" claims
+8. NO specific client counts (e.g., "500+ companies trust us") unless verified
+
+INSTEAD, focus on:
+- The value proposition itself (what you can do for them)
+- Questions about their potential challenges
+- Observations about their business from the research
+- General benefits without specific numbers
+
+If you have NO verified case studies, write emails that focus on the VALUE PROPOSITION 
+and ask curiosity-driven questions rather than making claims about results.
 
 === GENERATE 3 DIFFERENT EMAILS ===
 Each email should apply the "${style?.name || 'Professional'}" framework differently.

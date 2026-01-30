@@ -146,11 +146,22 @@ ${senderData.testimonials.map((t, i) => `${i + 1}. "${t.quote}" - ${t.author}${t
 NO TESTIMONIALS FOUND ON WEBSITE - DO NOT MAKE UP ANY TESTIMONIALS OR REVIEWS.
 `}
 
-CRITICAL AUTHENTICITY RULE:
-- ONLY reference case studies, testimonials, statistics, or client names that are listed above
-- If no case studies or testimonials are provided, DO NOT invent any - focus on the value proposition instead
-- NEVER fabricate company names, percentage improvements, or quotes
-- Real social proof beats fake social proof - use none if you have none
+CRITICAL AUTHENTICITY RULES (MUST FOLLOW - NO EXCEPTIONS):
+1. ONLY reference case studies, testimonials, or statistics that are EXPLICITLY listed above
+2. If no case studies are provided, DO NOT invent any - focus on the value proposition instead
+3. NEVER fabricate:
+   - Percentage claims (e.g., "increased by 47%")
+   - Company names as social proof (e.g., "companies like X, Y, Z")
+   - Dollar amounts or revenue figures
+   - Specific timeframes with results (e.g., "in just 30 days")
+   - Testimonial quotes with attribution
+   - Client counts (e.g., "500+ companies")
+   - ROI multipliers (e.g., "3x ROI")
+4. DO NOT use phrases like "studies show", "research indicates", "proven to"
+5. Instead, focus on:
+   - The value proposition and what you can do for them
+   - Questions about their potential challenges
+   - Observations from your research about their business
 
 EMAIL INTENT (what the sender wants to achieve):
 ${intent}
